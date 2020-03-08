@@ -5,6 +5,8 @@
  */
 package dtos;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author ngochuu
@@ -12,6 +14,7 @@ package dtos;
 public class UserDTO {
     private String email, password, fullname, phone, address, status, sex;
     private int roleID;
+    private Timestamp createdDate;
 
     public UserDTO() {
     }
@@ -79,5 +82,13 @@ public class UserDTO {
     public void setRoleID(int roleID) {
         this.roleID = roleID;
     }
-            
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
+    }
+        
 }

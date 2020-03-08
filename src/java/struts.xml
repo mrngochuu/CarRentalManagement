@@ -5,6 +5,32 @@
 <struts>
     <!-- Configuration for the default package. -->
     <package name="default" extends="struts-default">
+        <global-results>
+            <result name="error">error.jsp</result>
+        </global-results>
+ 
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
         
+        <action name="LoginAction" class="quest.actions.LoginAction">
+            <result name="success">index.jsp</result>
+            <result name="invalid">login.jsp</result>
+            <result name="input">login.jsp</result>
+        </action>
+        
+        <action name="RegistrationAction" class="quest.actions.RegistrationAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SendingMailAction</param>
+                <param name="email">${email}</param>
+                <param name="fullname">${fullname}</param>
+            </result>
+            <result name="invalid">registration.jsp</result>
+            <result name="input">registration.jsp</result>
+        </action>
+        
+        <action name="SendingMailAction" class="quest.actions.SendingMailAction">
+            <result name="success">index.jsp</result>
+        </action>
     </package>
 </struts>

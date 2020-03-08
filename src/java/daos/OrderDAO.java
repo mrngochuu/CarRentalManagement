@@ -5,11 +5,13 @@
  */
 package daos;
 
+import dtos.OrderDTO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import utils.DatabaseUtils;
 
 /**
  *
@@ -31,5 +33,52 @@ public class OrderDAO implements Serializable {
         if (conn != null) {
             conn.close();
         }
+    }
+
+    public OrderDTO getObjectByEmail(String email, boolean payment) throws SQLException, ClassNotFoundException {
+        OrderDTO dto = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT orderID FROM orders WHERE email = ? AND isPayment = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, email);
+                pstm.setBoolean(2, payment);
+                rs = pstm.executeQuery();
+                if (rs.next()) {
+                    dto = new OrderDTO();
+                    dto.setEmail(email);
+                    dto.setOrderID(rs.getInt("orderID"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return dto;
+    }
+
+    public OrderDTO createObject(String email) throws ClassNotFoundException, SQLException {
+        OrderDTO dto = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "INSERT INTO orders (email, isPayment) VALUES (?,?)";
+                String generatedColumns[] = {"OrderID"};
+                pstm = conn.prepareStatement(sql, generatedColumns);
+                pstm.setString(1, email);
+                pstm.setBoolean(2, false);
+                if(pstm.executeUpdate() > 0) {
+                    rs = pstm.getGeneratedKeys();
+                    if(rs.next()) {
+                        dto = new OrderDTO();
+                        dto.setEmail(email);
+                        dto.setOrderID(rs.getInt(1));
+                    }
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return dto;
     }
 }
