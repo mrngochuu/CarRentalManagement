@@ -134,45 +134,42 @@ public class RegistrationAction extends ActionSupport {
 
     public String execute() throws Exception {
         String url = ERROR;
-        try {
-            HttpServletRequest request = ServletActionContext.getRequest();
-            UserDAO userDAO = new UserDAO();
-            if (!userDAO.checkAccountExisted(email, "active")) {
-                RoleDTO roleDTO = new RoleDAO().getObjectByName("customer");
-                UserDTO userDTO = new UserDTO();
-                userDTO.setEmail(email);
-                userDTO.setPassword(PasswordUtils.hashPassword(password));
-                userDTO.setFullname(fullname);
-                userDTO.setSex(sex);
-                userDTO.setPhone(phone);
-                userDTO.setAddress(address);
-                userDTO.setStatus("new");
-                userDTO.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
+        HttpServletRequest request = ServletActionContext.getRequest();
+        UserDAO userDAO = new UserDAO();
+        if (!userDAO.checkAccountExisted(email, "active")) {
+            RoleDTO roleDTO = new RoleDAO().getObjectByName("customer");
+            UserDTO userDTO = new UserDTO();
+            userDTO.setEmail(email);
+            userDTO.setPassword(PasswordUtils.hashPassword(password));
+            userDTO.setFullname(fullname);
+            userDTO.setSex(sex);
+            userDTO.setPhone(phone);
+            userDTO.setAddress(address);
+            userDTO.setStatus("new");
+            userDTO.setCreatedDate(Timestamp.valueOf(LocalDateTime.now()));
 
-                if (roleDTO != null) {
-                    userDTO.setRoleID(roleDTO.getRoleID());
-                } else {
-                    request.setAttribute("ERROR", "Role is not found!");
-                }
+            if (roleDTO != null) {
+                userDTO.setRoleID(roleDTO.getRoleID());
+            } else {
+                request.setAttribute("ERROR", "Role is not found!");
+            }
 
-                if (!userDAO.checkAccountExisted(email, "new")) {
-                    if (userDAO.storeAccount(userDTO)) {
-                        url = SUCCESS;
-                    } else {
-                        request.setAttribute("ERROR", "Register account is failed!");
-                    }
+            if (!userDAO.checkAccountExisted(email, "new")) {
+                if (userDAO.storeAccount(userDTO)) {
+                    url = SUCCESS;
                 } else {
-                    if(userDAO.updateAccount(userDTO)) {
-                        url = SUCCESS;
-                    } else {
-                        request.setAttribute("ERROR", "Update account is failed!");
-                    }
+                    request.setAttribute("ERROR", "Register account is failed!");
                 }
             } else {
-                request.setAttribute("INVALID", "Email already exists!");
-                url = INVALID;
+                if (userDAO.updateAccount(userDTO)) {
+                    url = SUCCESS;
+                } else {
+                    request.setAttribute("ERROR", "Update account is failed!");
+                }
             }
-        } catch (Exception e) {
+        } else {
+            request.setAttribute("INVALID", "Email already exists!");
+            url = INVALID;
         }
         return url;
     }

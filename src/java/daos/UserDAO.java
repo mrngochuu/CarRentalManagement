@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import utils.DatabaseUtils;
 
 /**
@@ -121,6 +122,24 @@ public class UserDAO implements Serializable {
                 pstm.setTimestamp(7, dto.getCreatedDate());
                 pstm.setInt(8, dto.getRoleID());
                 pstm.setString(9, dto.getEmail());
+                checked = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return checked;
+    }
+    
+    public boolean updateStatusWithCurrentTime(String email, String status, Timestamp time) throws ClassNotFoundException, SQLException {
+        boolean checked = true;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "UPDATE Users SET status = ?, createdDate = ? WHERE email = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, status);
+                pstm.setTimestamp(2, time);
+                pstm.setString(3, email);
                 checked = pstm.executeUpdate() > 0;
             }
         } finally {

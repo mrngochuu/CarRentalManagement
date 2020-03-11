@@ -30,7 +30,13 @@
         </action>
         
         <action name="SendingMailAction" class="quest.actions.SendingMailAction">
-            <result name="success">index.jsp</result>
+            <result name="success">verificationCode.jsp</result>
+        </action>
+        
+        <action name="VerificationAction" class="quest.actions.VerificationAction">
+            <result name="success">login.jsp</result>
+            <result name="invalid">verificationCode.jsp</result>
+            <result name="input">verificationCode.jsp</result>
         </action>
     </package>
 </struts>

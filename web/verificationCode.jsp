@@ -19,38 +19,28 @@
                 <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                     <div class="card card-signin my-5">
                         <div class="card-body">
-                            <h2>Hello <s:property value="#fullname"/>, </h2>
+                            <h2>Hello <s:property value="fullname"/></h2>
                             <p>A code send your email. Please enter code to complete registration!</p>
                             
                             <s:form theme="simple" cssClass="form-signin" action="VerificationAction" method="POST" >
-                                <s:textfield cssClass="form-control mb-3" name="code" placeholder="Code" />
-                                <font color="red"><s:fielderror fieldName="email"/></font>
-                                <s:password cssClass="form-control mb-3" name="password" placeholder="Password"/>
-                                <font color="red"><s:fielderror fieldName="password"/></font>
+                                <s:textfield cssClass="form-control mb-3" name="code" placeholder="Code"/>
+                                <font color="red"><s:fielderror fieldName="code"/></font>
                                 <font color="red"><p class="mb-3"><s:property value="#request.INVALID"/></p></font>
-                                <s:submit cssClass="btn btn-lg btn-primary btn-block text-uppercase mb-3" value="Log in"/>
+                                <s:submit cssClass="btn btn-lg btn-primary btn-block text-uppercase mb-3" value="Verify"/>
+                                <s:hidden name="email" value="%{email}"/>
+                                <s:hidden name="fullname" value="%{fullname}"/>
                             </s:form>
-                            <form action="MainController" method="POST" class="form-signin">
-                                Code: <input type="text" name="txtCode" class="mb-3"/>
-                                <font color="red"><p class="mb-3">${requestScope.INVALID}</p></font>
-                                <input type="hidden" name="txtEmail" value="${param.txtEmail}"/>
-                                <input type="hidden" name="txtFullname" value="${param.txtFullname}"/>
-                                <input type="submit" name="action" value="Confirm" class="btn btn-lg btn-primary btn-block text-uppercase mb-3">
-                            </form>
+                                
                             <hr class="m3-b">
                             <div class="mb-3">
-                                <c:url var="homeLink" value="MainController">
-                                    <c:param name="action" value="SearchArticle"/>
-                                </c:url>
-                                <a href="${homeLink}">Home Page</a>
+                                <a href="#">Home Page</a>
                             </div>
                             <div class="mb-3">
-                                <c:url var="resendLink" value="MainController">
-                                    <c:param name="action" value="SendingCode"/>
-                                    <c:param name="txtEmail" value="${param.txtEmail}"/>
-                                    <c:param name="txtFullname" value="${param.txtFullname}" />
-                                </c:url>
-                                <a href="${resendLink}">Resend code</a>
+                                <s:url action="SendingMailAction" var="resendLink" escapeAmp="false">
+                                    <s:param name="email" value="%{email}"/>
+                                    <s:param name="fullname" value="%{fullname}"/>
+                                </s:url>
+                                <a href="<s:property value="#resendLink"/>">Resend code</a>
                             </div>
 
                         </div>

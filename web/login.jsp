@@ -11,6 +11,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src='https://www.google.com/recaptcha/api.js?hl=en'></script>
         <title>Login Page</title>
     </head>
     <body>
@@ -27,8 +28,11 @@
                                 <s:password cssClass="form-control mb-3" name="password" placeholder="Password"/>
                                 <font color="red"><s:fielderror fieldName="password"/></font>
                                 <font color="red"><p class="mb-3"><s:property value="#request.INVALID"/></p></font>
+                                <div class="g-recaptcha mb-3" data-sitekey="6LcEWOAUAAAAAM71s-PXbNHNQMR8mtFlN1LW3DsB">
+                                </div>
                                 <s:submit cssClass="btn btn-lg btn-primary btn-block text-uppercase mb-3" value="Log in"/>
                             </s:form>
+                                
                             <hr class="my-4">
                             <div class="mb-3">
                                 <a href="">Home Page</a>

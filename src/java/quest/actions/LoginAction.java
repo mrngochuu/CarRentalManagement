@@ -17,6 +17,8 @@ import dtos.UserDTO;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.struts2.ServletActionContext;
+import utils.GoogleReCaptchaUtils;
+import utils.PasswordUtils;
 
 /**
  *
@@ -35,11 +37,11 @@ public class LoginAction extends ActionSupport {
 
     @Override
     public void validate() {
-        if(email.isEmpty()) {
+        if (email.isEmpty()) {
             addFieldError("email", "Email is required!");
         }
-        
-        if(password.isEmpty()) {
+
+        if (password.isEmpty()) {
             addFieldError("password", "Password is required!");
         }
     }
@@ -71,28 +73,33 @@ public class LoginAction extends ActionSupport {
     public String execute() throws Exception {
         String url = ERROR;
         HttpServletRequest request = ServletActionContext.getRequest();
-
-        UserDTO userDTO = new UserDAO().checkLogin(email, password, "active");
-        if (userDTO != null) {
-            RoleDTO roleDTO = new RoleDAO().getObjectByID(userDTO.getRoleID());
-            if (roleDTO != null) {
-                Map session = ActionContext.getContext().getSession();
-                if (roleDTO.getRoleName().equals("customer")) {
-                    OrderDTO orderDTO = new OrderDAO().getObjectByEmail(email, false);
-                    if(orderDTO == null) {
-                        orderDTO = new OrderDAO().createObject(email);
+        String reCaptcha = request.getParameter("g-recaptcha-response");
+        boolean valid = GoogleReCaptchaUtils.verify(reCaptcha);
+        if (valid) {
+            UserDTO userDTO = new UserDAO().checkLogin(email, PasswordUtils.hashPassword(password), "active");
+            if (userDTO != null) {
+                RoleDTO roleDTO = new RoleDAO().getObjectByID(userDTO.getRoleID());
+                if (roleDTO != null) {
+                    Map session = ActionContext.getContext().getSession();
+                    if (roleDTO.getRoleName().equals("customer")) {
+                        OrderDTO orderDTO = new OrderDAO().getObjectByEmail(email, false);
+                        if (orderDTO == null) {
+                            orderDTO = new OrderDAO().createObject(email);
+                        }
+                        session.put("ORDER", orderDTO);
                     }
-                    session.put("ORDER", orderDTO);
+                    session.put("USER", userDTO);
+                    session.put("ROLE", roleDTO);
+                    url = SUCCESS;
+                } else {
+                    request.setAttribute("ERROR", "Role is not found!");
                 }
-                session.put("USER", userDTO);
-                session.put("ROLE", roleDTO);
-                url = SUCCESS;
             } else {
-                request.setAttribute("ERROR", "Role is not found!");
+                url = INVALID;
+                request.setAttribute("INVALID", "Email or password invalid!");
             }
         } else {
             url = INVALID;
-            request.setAttribute("INVALID", "Email or password invalid!");
         }
         return url;
     }
