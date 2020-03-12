@@ -10,6 +10,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Hashtable;
+import utils.DatabaseUtils;
 
 /**
  *
@@ -31,5 +34,28 @@ public class OrderDetailsDAO implements Serializable {
         if (conn != null) {
             conn.close();
         }
+    }
+    
+    public Hashtable<Integer, Integer> getTotalCarRentaling(Timestamp currentDate) throws ClassNotFoundException, SQLException {
+        Hashtable<Integer, Integer> hashtable = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE rentalDate <= ? AND returnDate >= ?  GROUP BY carID";
+                pstm = conn.prepareStatement(sql);
+                pstm.setTimestamp(1, currentDate);
+                pstm.setTimestamp(2, currentDate);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    if(hashtable == null) {
+                        hashtable = new Hashtable<>();
+                    }
+                    hashtable.put(rs.getInt("carID"), rs.getInt("total"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return hashtable;
     }
 }

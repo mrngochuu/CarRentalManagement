@@ -8,7 +8,7 @@
         <global-results>
             <result name="error">error.jsp</result>
         </global-results>
- 
+        
         <global-exception-mappings>
             <exception-mapping exception="java.lang.Exception" result="error"/>
         </global-exception-mappings>
@@ -38,5 +38,10 @@
             <result name="invalid">verificationCode.jsp</result>
             <result name="input">verificationCode.jsp</result>
         </action>
+        
+        <action name="SearchingCarAction" class="user.actions.SearchingCarAction">
+            <result name="success">index.jsp</result>
+        </action>
+        
     </package>
 </struts>

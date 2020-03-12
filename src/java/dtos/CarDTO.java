@@ -14,7 +14,8 @@ import java.sql.Timestamp;
  */
 public class CarDTO implements Serializable {
     private int carID, price, quantity, categoryID;
-    private String carName, status, imgURL, color;
+    private String carName, status, imgURL, color, model;
+    private Timestamp createdDate;
 
     public String getColor() {
         return color;
@@ -23,7 +24,6 @@ public class CarDTO implements Serializable {
     public void setColor(String color) {
         this.color = color;
     }
-    private Timestamp createdDate, rentalDate, returnDate;
 
     public CarDTO() {
     }
@@ -92,20 +92,12 @@ public class CarDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public Timestamp getRentalDate() {
-        return rentalDate;
+    public String getModel() {
+        return model;
     }
 
-    public void setRentalDate(Timestamp rentalDate) {
-        this.rentalDate = rentalDate;
-    }
-
-    public Timestamp getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(Timestamp returnDate) {
-        this.returnDate = returnDate;
+    public void setModel(String model) {
+        this.model = model;
     }
     
 }

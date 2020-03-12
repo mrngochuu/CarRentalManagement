@@ -5,11 +5,16 @@
  */
 package daos;
 
+import dtos.CarDTO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import utils.DatabaseUtils;
 
 /**
  *
@@ -31,5 +36,49 @@ public class CarDAO implements Serializable {
         if (conn != null) {
             conn.close();
         }
+    }
+
+    public List<CarDTO> findCarsWithoutConditions(Hashtable<Integer, Integer> rentaledCar, String status) throws ClassNotFoundException, SQLException {
+        List<CarDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT carID, carName, price, quantity, model, imgURL, color, categoryID FROM cars WHERE status = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "active");
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    boolean flag = true;
+                    int carID = rs.getInt("carID");
+                    CarDTO carDTO = new CarDTO();
+                    if (rentaledCar != null && rentaledCar.containsKey(carID)) {
+                        int avaiableCar = rs.getInt("quantity") - rentaledCar.get(carID);
+                        if (avaiableCar <= 0) {
+                            flag = false;
+                        } else {
+                            carDTO.setQuantity(avaiableCar);
+                        }
+                    } else {
+                        carDTO.setQuantity(rs.getInt("quantity"));
+                    }
+                    if (flag) {
+                        if (list == null) {
+                            list = new ArrayList<>();
+                        }
+                        carDTO.setCarID(carID);
+                        carDTO.setCarName(rs.getString("carName"));
+                        carDTO.setPrice(rs.getInt("price"));
+                        carDTO.setModel(rs.getString("model"));
+                        carDTO.setImgURL(rs.getString("imgURL"));
+                        carDTO.setColor(rs.getString("color"));
+                        carDTO.setCategoryID(rs.getInt("categoryID"));
+                        list.add(carDTO);
+                    }
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
     }
 }

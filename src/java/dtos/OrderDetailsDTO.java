@@ -6,6 +6,7 @@
 package dtos;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.io.Serializable;
  */
 public class OrderDetailsDTO implements Serializable {
     private int price, quantity, orderID, carID;
+    private Timestamp rentalDate, returnDate;
 
     public OrderDetailsDTO() {
     }
@@ -47,6 +49,22 @@ public class OrderDetailsDTO implements Serializable {
 
     public void setCarID(int carID) {
         this.carID = carID;
+    }
+
+    public Timestamp getRentalDate() {
+        return rentalDate;
+    }
+
+    public void setRentalDate(Timestamp rentalDate) {
+        this.rentalDate = rentalDate;
+    }
+
+    public Timestamp getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(Timestamp returnDate) {
+        this.returnDate = returnDate;
     }
     
 }

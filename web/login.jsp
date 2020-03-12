@@ -32,7 +32,6 @@
                                 </div>
                                 <s:submit cssClass="btn btn-lg btn-primary btn-block text-uppercase mb-3" value="Log in"/>
                             </s:form>
-                                
                             <hr class="my-4">
                             <div class="mb-3">
                                 <a href="">Home Page</a>

@@ -5,11 +5,16 @@
  */
 package daos;
 
+import dtos.CategoryDTO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import utils.DatabaseUtils;
 
 /**
  *
@@ -31,5 +36,26 @@ public class CategoryDAO implements Serializable {
         if (conn != null) {
             conn.close();
         }
+    }
+    
+    public Hashtable<Integer, String> getList() throws ClassNotFoundException, SQLException {
+        Hashtable<Integer, String> hastable = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT categoryID, categoryName FROM Categories";
+                pstm = conn.prepareStatement(sql);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    if(hastable == null) {
+                        hastable = new Hashtable<>();
+                    }
+                    hastable.put(rs.getInt("categoryID"), rs.getString("categoryName"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return hastable;
     }
 }
