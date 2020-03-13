@@ -14,6 +14,7 @@ import java.sql.Timestamp;
  */
 public class OrderDetailsDTO implements Serializable {
     private int price, quantity, orderID, carID;
+    private String status;
     private Timestamp rentalDate, returnDate;
 
     public OrderDetailsDTO() {
@@ -65,6 +66,14 @@ public class OrderDetailsDTO implements Serializable {
 
     public void setReturnDate(Timestamp returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
 }

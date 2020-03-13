@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import utils.DatabaseUtils;
 
 /**
@@ -42,7 +44,7 @@ public class OrderDetailsDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE ";
+                String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE (status = ? OR status = ?) AND ";
                 if (rentalDate == null && returnDate == null) {
                     //accept 1 day
                     sql += "rentalDate <= '" + currentDate + "' AND returnDate >= '" + currentDate + "' ";
@@ -63,6 +65,8 @@ public class OrderDetailsDAO implements Serializable {
 
                 sql += "GROUP BY carID";
                 pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "wating");
+                pstm.setString(2, "rentaling");
                 rs = pstm.executeQuery();
                 while (rs.next()) {
                     if (hashtable == null) {
@@ -106,12 +110,40 @@ public class OrderDetailsDAO implements Serializable {
                 pstm.setInt(2, 1);
                 pstm.setInt(3, orderDetailsDTO.getOrderID());
                 pstm.setInt(4, orderDetailsDTO.getCarID());
-                rs = pstm.executeQuery();
-                flag = rs.next();
+                flag = pstm.executeUpdate() > 0;
             }
         } finally {
             closeConnection();
         }
         return flag;
+    }
+    
+    public List<OrderDetailsDTO> getCart(int orderID) throws SQLException, ClassNotFoundException {
+        List<OrderDetailsDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT price, quantity, carID, rentalDate, returnDate FROM orderDetails WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, orderID);
+                rs = pstm.executeQuery();
+                while(rs.next()) {
+                    if(list == null) {
+                        list = new ArrayList<>();
+                    }
+                    OrderDetailsDTO dto = new OrderDetailsDTO();
+                    dto.setOrderID(orderID);
+                    dto.setCarID(rs.getInt("carID"));
+                    dto.setPrice(rs.getInt("price"));
+                    dto.setQuantity(rs.getInt("quantity"));
+                    dto.setRentalDate(rs.getTimestamp("rentalDate"));
+                    dto.setReturnDate(rs.getTimestamp("returnDate"));
+                    list.add(dto);
+                }
+            }
+        } finally {
+            
+        }
+        return list;
     }
 }

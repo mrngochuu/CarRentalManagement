@@ -22,7 +22,7 @@ public class AddingCartAction {
     private static final String ERROR = "error";
     private static final String SUCCESS = "success";
 
-    private String carID, price, txtSearch, cbCategory, fromDate, toDate, priceMin, priceMax;
+    private String carID, price, carName, txtSearch, cbCategory, fromDate, toDate, priceMin, priceMax, message;
 
     public AddingCartAction() {
     }
@@ -91,25 +91,41 @@ public class AddingCartAction {
         this.price = price;
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getCarName() {
+        return carName;
+    }
+
+    public void setCarName(String carName) {
+        this.carName = carName;
+    }
+    
     public String execute() throws Exception {
         String url = ERROR;
         HttpServletRequest request = ServletActionContext.getRequest();
         Map session = ActionContext.getContext().getSession();
         OrderDTO orderDTO = (OrderDTO) session.get("ORDER");
         OrderDetailsDAO orderDetailsDAO = new OrderDetailsDAO();
-        if (orderDetailsDAO.checkExist(orderDTO.getOrderID(), Integer.parseInt(carID))) {
+        if (!(orderDetailsDAO.checkExist(orderDTO.getOrderID(), Integer.parseInt(carID)))) {
             OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
             orderDetailsDTO.setPrice(Integer.parseInt(price));
             orderDetailsDTO.setOrderID(orderDTO.getOrderID());
             orderDetailsDTO.setCarID(Integer.parseInt(carID));
             if (orderDetailsDAO.insertCart(orderDetailsDTO)) {
-                request.setAttribute("MESSAGE", "Adding the Car to Cart is successful!");
+                message = "Adding " + carName + " to Cart is successful!";
                 url = SUCCESS;
             } else {
                 request.setAttribute("ERROR", "Adding the Car to Cart is failed!");
             }
         } else {
-            request.setAttribute("MESSAGE", "The car already added to Cart!");
+            message =  carName + " already added to Cart!"; 
             url = SUCCESS;
         }
         return url;

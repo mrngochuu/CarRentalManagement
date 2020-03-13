@@ -3,12 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/layout/search.jsp</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/welcome.jsp</file>
             <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/index.jsp</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/SearchingCarAction.java</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/WEB-INF/web.xml</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/struts.xml</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/daos/OrderDetailsDAO.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/LogoutAction.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/ShowingCartAction.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/daos/CarDAO.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/dtos/OrderDetailsDTO.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/cart.jsp</file>
         </group>
     </open-files>
 </project-private>

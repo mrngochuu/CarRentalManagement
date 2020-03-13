@@ -14,9 +14,13 @@
         </global-exception-mappings>
         
         <action name="LoginAction" class="quest.actions.LoginAction">
-            <result name="success">index.jsp</result>
+            <result name="success" type="redirectAction">SearchingCarAction</result>
             <result name="invalid">login.jsp</result>
             <result name="input">login.jsp</result>
+        </action>
+        
+        <action name="LogoutAction" class="user.actions.LogoutAction">
+            <result name="success" type="redirectAction">SearchingCarAction</result>
         </action>
         
         <action name="RegistrationAction" class="quest.actions.RegistrationAction">
@@ -46,6 +50,7 @@
         <action name="AddingCartAction" class="user.actions.AddingCartAction">
             <result name="success" type="redirectAction">
                 <param name="actionName">SearchingCarAction</param>
+                <param name="message">${message}</param>
                 <param name="txtSearch">${txtSearch}</param>
                 <param name="cbCategory">${cbCategory}</param>
                 <param name="fromDate">${fromDate}</param>
@@ -53,6 +58,10 @@
                 <param name="priceMin">${priceMin}</param>
                 <param name="priceMax">${priceMax}</param>
             </result>
+        </action>
+        
+        <action name="ShowingCartAction" class="user.actions.ShowingCartAction">
+            <result name="success">cart.jsp</result>
         </action>
         
     </package>

@@ -101,6 +101,7 @@
                                 </div>
 
                                 <div class="col-lg-9 mt-3">
+                                    <h3 class="text-center text-danger mb-5"><s:property value="message"/></h3>
                                     <div class="row">
                                         <s:if test="%{#request.LIST_CAR != null}">
                                             <s:iterator value="#request.LIST_CAR" var="carDTO">
@@ -141,12 +142,13 @@
                                                                     <form action="AddingCartAction" method="POST">
                                                                         <input type="hidden" name="carID" value="<s:property value="#carDTO.carID"/>"/>
                                                                         <input type="hidden" name="price" value="<s:property value="#carDTO.price"/>"/>
+                                                                        <input type="hidden" name="carName" value="<s:property value="#carDTO.carName"/>"/>
                                                                         <input type="hidden" name="txtSearch" value="<s:property value="txtSearch"/>"/>
                                                                         <input type="hidden" name="cbCategory" value="<s:property value="cbCategory"/>"/>
                                                                         <input type="hidden" name="fromDate" value="<s:property value="fromDate"/>"/>
                                                                         <input type="hidden" name="toDate" value="<s:property value="toDate"/>"/>
                                                                         <input type="hidden" name="priceMin" value="<s:property value="priceMin"/>"/>
-                                                                        <input type="hidden" name="priceMax" value="<s:property value="toDate"/>"/>
+                                                                        <input type="hidden" name="priceMax" value="<s:property value="priceMax"/>"/>
                                                                         <input class="btn btn-success btn-outline-danger form-control" type="submit" value="Add to Cart"/>
                                                                     </form>
                                                                 </div>
@@ -158,19 +160,15 @@
                                         </s:if>
                                     </div>
                                 </div>
-
-                                </div>
                                 </div>
                                 </div>
                                 <s:include value="layout/footer.jsp"/>
                                 <script type="text/javascript">
                                     $(function () {
                                         $('#datetimepicker1').datetimepicker({
-                                            minDate: new Date(),
                                             format: 'DD/MM/YYYY'
                                         });
                                         $('#datetimepicker2').datetimepicker({
-                                            minDate: new Date(),
                                             format: 'DD/MM/YYYY',
                                             useCurrent: false
                                         });

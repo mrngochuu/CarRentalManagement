@@ -92,7 +92,7 @@ public class CarDAO implements Serializable {
                     sql += " AND carName LIKE '%"+ txtSearch +"%'";
                 }
                 
-                if(!categoryID.equals("0")) {
+                if(!categoryID.equals("0") && !categoryID.isEmpty()) {
                     sql += " AND categoryID = " + Integer.parseInt(categoryID);
                 }
                 
@@ -100,7 +100,7 @@ public class CarDAO implements Serializable {
                     sql += " AND price >= " + Integer.parseInt(minPrice);
                 }
                 
-                if(!maxPrice.isEmpty() || !maxPrice.equals("Max Price")) {
+                if(!maxPrice.isEmpty() || maxPrice.equals("Max Price")) {
                     sql += " AND price <= " + Integer.parseInt(maxPrice);
                 }
                 
@@ -140,5 +140,29 @@ public class CarDAO implements Serializable {
             closeConnection();
         }
         return list;
+    }
+    
+    public CarDTO getObjectByCarID(int carID) throws ClassNotFoundException, SQLException {
+        CarDTO dto = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT carName, categoryID, model, imgURL FROM Cars WHERE carID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, carID);
+                rs = pstm.executeQuery();
+                if(rs.next()) {
+                    dto = new CarDTO();
+                    dto.setCarID(carID);
+                    dto.setCarName(rs.getString("carName"));
+                    dto.setCategoryID(rs.getInt("categoryID"));
+                    dto.setModel(rs.getString("model"));
+                    dto.setImgURL(rs.getString("imgURL"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return dto;
     }
 }

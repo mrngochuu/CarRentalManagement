@@ -10,7 +10,6 @@ import daos.CarDAO;
 import daos.CategoryDAO;
 import daos.OrderDetailsDAO;
 import dtos.CarDTO;
-import dtos.CategoryDTO;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Hashtable;
@@ -27,7 +26,7 @@ public class SearchingCarAction {
 
     private static final String SUCCESS = "success";
 
-    private String txtSearch, cbCategory, fromDate, toDate, priceMin, priceMax;
+    private String txtSearch, cbCategory, fromDate, toDate, priceMin, priceMax , message;
 
     public SearchingCarAction() {
     }
@@ -78,6 +77,14 @@ public class SearchingCarAction {
 
     public void setPriceMax(String priceMax) {
         this.priceMax = priceMax;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String execute() throws Exception {
