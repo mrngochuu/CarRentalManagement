@@ -43,5 +43,17 @@
             <result name="success">index.jsp</result>
         </action>
         
+        <action name="AddingCartAction" class="user.actions.AddingCartAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SearchingCarAction</param>
+                <param name="txtSearch">${txtSearch}</param>
+                <param name="cbCategory">${cbCategory}</param>
+                <param name="fromDate">${fromDate}</param>
+                <param name="toDate">${toDate}</param>
+                <param name="priceMin">${priceMin}</param>
+                <param name="priceMax">${priceMax}</param>
+            </result>
+        </action>
+        
     </package>
 </struts>

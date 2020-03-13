@@ -32,10 +32,10 @@
         <div class="container-fluid">
             <div class="row">
                 <!-- search -->
-                <div class="col-lg-3 mt-3 bg-light rounded">
+                <div class="col-lg-3 mt-3 bg-light rounded" style="min-height: 460px; max-height: 520px;">
                     <h1 class="text-center">SEARCH BOX</h1>
                     <form action="SearchingCarAction" class="form-signin">
-                        <input class="form-control mb-5 mt-3" type="text" name="txtSearch" placeholder="Name" value="<s:property value="txtSearch"/>"/>
+                        <input class="form-control mb-5 mt-3" type="text" name="txtSearch" placeholder="Car Name" value="<s:property value="txtSearch"/>"/>
                         <!-- Type -->
                         <select class="form-control browser-default custom-select mb-5" name="cbCategory">
                             <option value="0">CATEGORY</option>
@@ -49,7 +49,7 @@
                                 <div class='col-md-6 mr-auto ml-auto'>
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker1'>
-                                            <input type="text" class="form-control" name="fromDate" value="<s:property value="fromDate"/>"/>
+                                            <input type="text" class="form-control" name="fromDate" value="${param.fromDate}"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -59,7 +59,7 @@
                                 <div class='mr-auto ml-auto col-md-6'>
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker2'>
-                                            <input type="text" class="form-control" name="toDate" value="<s:property value="toDate"/>"/>
+                                            <input type="text" class="form-control" name="toDate" value="${param.toDate}"/>
                                             <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
@@ -87,10 +87,11 @@
                                             <span class="input-group-addon">$</span>
                                             <input type="text" id="price-max-input" name="priceMax" data-toggle="dropdown" class="form-control" placeholder="Max Price" value="<s:property value="priceMax"/>" readonly="true"/>
                                             <ul id="price-max" class="dropdown-menu">
-                                                <li><a href="#" data-value="300">300</a></li>
-                                                <li><a href="#" data-value="500">500</a></li>
-                                                <li><a href="#" data-value="1000">1000</a></li>
-                                                <li><a href="#" data-value="2000">2000</a></li>
+                                                <li><a href="#" data-value="300" data-toggle="dropdown">300</a></li>
+                                                <li><a href="#" data-value="500" data-toggle="dropdown">500</a></li>
+                                                <li><a href="#" data-value="1000" data-toggle="dropdown">1000</a></li>
+                                                <li><a href="#" data-value="2000" data-toggle="dropdown">2000</a></li>
+                                                <li><a href="#" data-value="Max price" data-toggle="dropdown">Max price</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -99,13 +100,13 @@
                                 </form>
                                 </div>
 
-                                <div class="col-lg-9">
+                                <div class="col-lg-9 mt-3">
                                     <div class="row">
                                         <s:if test="%{#request.LIST_CAR != null}">
                                             <s:iterator value="#request.LIST_CAR" var="carDTO">
-                                                <section class="col-lg-4" style="max-height: 500px; min-height: 500px;">
+                                                <section class="col-lg-4" style="max-height: 600px; min-height: 600px;">
                                                     <div class="card brand">
-                                                        <img src="#" alt="NO IMAGE" width="100%" height="250">
+                                                        <img src="http://localhost:8084/Image/<s:property value="#carDTO.imgURL"/>" alt="NO IMAGE" width="100%" height="250">
                                                         <div class="card-body">
                                                             <hr>
                                                             <h4 class="card-title font-italic font-weight-bold"><s:property value="#carDTO.carName"/> - <s:property value="#carDTO.model"/></h4>
@@ -123,10 +124,32 @@
                                                                     <td class="col-lg-8"><p class="card-text"><s:property value="#session.HASHTABLE_CATEGORY[#carDTO.categoryID]"/></p></td>
                                                                 </tr>
                                                             </table>
-                                                                <hr>
+                                                            <hr>
                                                             <div class="row">
-                                                                <div class="col-lg-6"><h4 class="card-text text-center mr-auto ml-auto">Price: <s:property value="#carDTO.price"/></h4></div>
-                                                                <div class="col-lg-6"><h4 class="card-text text-center mr-auto ml-auto">Quantity: <s:property value="#carDTO.quantity"/></h4></div>
+                                                                <div class="col-lg-6 mr-auto ml-auto"><h4 class="card-text text-center">Price: <s:property value="#carDTO.price"/></h4></div>
+                                                                <div class="col-lg-6 mr-auto ml-auto"><h4 class="card-text text-center">Quantity: <s:property value="#carDTO.quantity"/></h4></div>
+                                                            </div>
+                                                            <hr>
+                                                            <div class="row">
+                                                                <div class="col-lg-5 col-md-5 col-sm-5 mr-auto ml-auto">
+                                                                    <form action="ShowingCarDetailsAction" method="POST">
+                                                                        <input type="hidden" name="carID" value="<s:property value="#carDTO.carID"/>"/>
+                                                                        <input class="btn btn-info btn-outline-secondary form-control" type="submit" value="See Details"/>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="col-lg-5 col-md-5 col-sm-5 mr-auto ml-auto">
+                                                                    <form action="AddingCartAction" method="POST">
+                                                                        <input type="hidden" name="carID" value="<s:property value="#carDTO.carID"/>"/>
+                                                                        <input type="hidden" name="price" value="<s:property value="#carDTO.price"/>"/>
+                                                                        <input type="hidden" name="txtSearch" value="<s:property value="txtSearch"/>"/>
+                                                                        <input type="hidden" name="cbCategory" value="<s:property value="cbCategory"/>"/>
+                                                                        <input type="hidden" name="fromDate" value="<s:property value="fromDate"/>"/>
+                                                                        <input type="hidden" name="toDate" value="<s:property value="toDate"/>"/>
+                                                                        <input type="hidden" name="priceMin" value="<s:property value="priceMin"/>"/>
+                                                                        <input type="hidden" name="priceMax" value="<s:property value="toDate"/>"/>
+                                                                        <input class="btn btn-success btn-outline-danger form-control" type="submit" value="Add to Cart"/>
+                                                                    </form>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -143,9 +166,11 @@
                                 <script type="text/javascript">
                                     $(function () {
                                         $('#datetimepicker1').datetimepicker({
+                                            minDate: new Date(),
                                             format: 'DD/MM/YYYY'
                                         });
                                         $('#datetimepicker2').datetimepicker({
+                                            minDate: new Date(),
                                             format: 'DD/MM/YYYY',
                                             useCurrent: false
                                         });
@@ -159,25 +184,11 @@
                                         // Set Min Price
                                         $("#price-min li a").click(function () {
                                             $('#price-min-input').val($(this).attr('data-value'));
-                                            $('#price-max-input').focus();
-                                            $('#price-max').show();
-
                                         });
 
                                         // Set Max Price
                                         $("#price-max li a").click(function () {
                                             $('#price-max-input').val($(this).attr('data-value'));
-                                            $('#price-max').hide();
-                                        });
-
-                                        // Show Max list when cleck on max input 
-                                        $("#price-max-input").click(function () {
-                                            $('#price-max').show();
-                                        });
-
-                                        // Hide Max List when keypress on max input
-                                        $("#price-max-input").keypress(function () {
-                                            $('#price-max').hide();
                                         });
                                     });
                                 </script>

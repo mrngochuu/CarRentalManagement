@@ -81,4 +81,64 @@ public class CarDAO implements Serializable {
         }
         return list;
     }
+    
+    public List<CarDTO> findCarsWithConditions(Hashtable<Integer, Integer> rentaledCar, String status, String txtSearch, String categoryID, String minPrice, String maxPrice) throws ClassNotFoundException, SQLException {
+        List<CarDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT carID, carName, price, quantity, model, imgURL, color, categoryID FROM cars WHERE status = ?";
+                if(!txtSearch.isEmpty()) {
+                    sql += " AND carName LIKE '%"+ txtSearch +"%'";
+                }
+                
+                if(!categoryID.equals("0")) {
+                    sql += " AND categoryID = " + Integer.parseInt(categoryID);
+                }
+                
+                if(!minPrice.isEmpty()) {
+                    sql += " AND price >= " + Integer.parseInt(minPrice);
+                }
+                
+                if(!maxPrice.isEmpty() || !maxPrice.equals("Max Price")) {
+                    sql += " AND price <= " + Integer.parseInt(maxPrice);
+                }
+                
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "active");
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    boolean flag = true;
+                    int carID = rs.getInt("carID");
+                    CarDTO carDTO = new CarDTO();
+                    if (rentaledCar != null && rentaledCar.containsKey(carID)) {
+                        int avaiableCar = rs.getInt("quantity") - rentaledCar.get(carID);
+                        if (avaiableCar <= 0) {
+                            flag = false;
+                        } else {
+                            carDTO.setQuantity(avaiableCar);
+                        }
+                    } else {
+                        carDTO.setQuantity(rs.getInt("quantity"));
+                    }
+                    if (flag) {
+                        if (list == null) {
+                            list = new ArrayList<>();
+                        }
+                        carDTO.setCarID(carID);
+                        carDTO.setCarName(rs.getString("carName"));
+                        carDTO.setPrice(rs.getInt("price"));
+                        carDTO.setModel(rs.getString("model"));
+                        carDTO.setImgURL(rs.getString("imgURL"));
+                        carDTO.setColor(rs.getString("color"));
+                        carDTO.setCategoryID(rs.getInt("categoryID"));
+                        list.add(carDTO);
+                    }
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
 }

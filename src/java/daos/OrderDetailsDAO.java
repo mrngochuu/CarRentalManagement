@@ -5,6 +5,7 @@
  */
 package daos;
 
+import dtos.OrderDetailsDTO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,19 +36,36 @@ public class OrderDetailsDAO implements Serializable {
             conn.close();
         }
     }
-    
-    public Hashtable<Integer, Integer> getTotalCarRentaling(Timestamp currentDate) throws ClassNotFoundException, SQLException {
+
+    public Hashtable<Integer, Integer> getTotalCarRentalingWithDate(Timestamp rentalDate, Timestamp returnDate, Timestamp currentDate) throws ClassNotFoundException, SQLException {
         Hashtable<Integer, Integer> hashtable = null;
         try {
             conn = DatabaseUtils.getConnection();
-            if(conn != null) {
-                String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE rentalDate <= ? AND returnDate >= ?  GROUP BY carID";
+            if (conn != null) {
+                String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE ";
+                if (rentalDate == null && returnDate == null) {
+                    //accept 1 day
+                    sql += "rentalDate <= '" + currentDate + "' AND returnDate >= '" + currentDate + "' ";
+                } else if (rentalDate != null && returnDate == null) {
+                    //accept 1 day
+                    sql += "rentalDate <= '" + rentalDate + "' AND returnDate >= '" + rentalDate + "' ";
+                } else if (rentalDate == null && returnDate != null) {
+                    //accept currentDate - returnDate
+                    sql += "(returnDate BETWEEN '"+ currentDate +"' AND '"+ returnDate +"') "
+                            + "OR (rentalDate BETWEEN '"+ currentDate +"' AND '"+ returnDate +"') "
+                            + "OR (('" + currentDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate))";
+                } else {
+                    //accept rentalDate - returnDate
+                    sql += "(returnDate BETWEEN '"+ rentalDate +"' AND '"+ returnDate +"') "
+                            + "OR (rentalDate BETWEEN '"+ rentalDate +"' AND '"+ returnDate +"') "
+                            + "OR (('" + rentalDate+ "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate))";
+                }
+
+                sql += "GROUP BY carID";
                 pstm = conn.prepareStatement(sql);
-                pstm.setTimestamp(1, currentDate);
-                pstm.setTimestamp(2, currentDate);
                 rs = pstm.executeQuery();
                 while (rs.next()) {
-                    if(hashtable == null) {
+                    if (hashtable == null) {
                         hashtable = new Hashtable<>();
                     }
                     hashtable.put(rs.getInt("carID"), rs.getInt("total"));
@@ -57,5 +75,43 @@ public class OrderDetailsDAO implements Serializable {
             closeConnection();
         }
         return hashtable;
+    }
+
+    public boolean checkExist(int orderID, int carID) throws SQLException, ClassNotFoundException  {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT carID FROM OrderDetails WHERE orderID = ? AND carID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, orderID);
+                pstm.setInt(2, carID);
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean insertCart(OrderDetailsDTO orderDetailsDTO) throws SQLException, ClassNotFoundException  {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "INSERT INTO OrderDetails (price, quantity, orderID, carID) VALUES (?,?,?,?)";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, orderDetailsDTO.getPrice());
+                pstm.setInt(2, 1);
+                pstm.setInt(3, orderDetailsDTO.getOrderID());
+                pstm.setInt(4, orderDetailsDTO.getCarID());
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
     }
 }
