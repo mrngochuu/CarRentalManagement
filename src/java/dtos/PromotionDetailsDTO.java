@@ -13,10 +13,9 @@ import java.sql.Timestamp;
  * @author ngochuu
  */
 public class PromotionDetailsDTO implements Serializable {
-    private String email;
-    private int codeID;
-    private Timestamp receiverDate;
-
+    private String email, status, code;
+    private int promotionID;
+    private Timestamp receivedDate, expiriedDate;
     public PromotionDetailsDTO() {
     }
 
@@ -28,20 +27,44 @@ public class PromotionDetailsDTO implements Serializable {
         this.email = email;
     }
 
-    public int getCodeID() {
-        return codeID;
+    public int getPromotionID() {
+        return promotionID;
     }
 
-    public void setCodeID(int codeID) {
-        this.codeID = codeID;
+    public void setPromotionID(int promotionID) {
+        this.promotionID = promotionID;
     }
 
-    public Timestamp getReceiverDate() {
-        return receiverDate;
+    public Timestamp getReceivedDate() {
+        return receivedDate;
     }
 
-    public void setReceiverDate(Timestamp receiverDate) {
-        this.receiverDate = receiverDate;
+    public void setReceivedDate(Timestamp receivedDate) {
+        this.receivedDate = receivedDate;
+    }
+
+    public Timestamp getExpiriedDate() {
+        return expiriedDate;
+    }
+
+    public void setExpiriedDate(Timestamp expiriedDate) {
+        this.expiriedDate = expiriedDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
     
 }

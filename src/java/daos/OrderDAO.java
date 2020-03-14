@@ -11,8 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import utils.DatabaseUtils;
 
 /**
@@ -42,7 +40,7 @@ public class OrderDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT orderID FROM orders WHERE email = ? AND isPayment = ?";
+                String sql = "SELECT orderID, promotionID FROM orders WHERE email = ? AND isPayment = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setString(1, email);
                 pstm.setBoolean(2, payment);
@@ -51,6 +49,7 @@ public class OrderDAO implements Serializable {
                     dto = new OrderDTO();
                     dto.setEmail(email);
                     dto.setOrderID(rs.getInt("orderID"));
+                    dto.setPromotionID(rs.getInt("promotionID"));
                 }
             }
         } finally {
@@ -82,5 +81,39 @@ public class OrderDAO implements Serializable {
             closeConnection();
         }
         return dto;
+    }
+    
+    public boolean updateNULLPromotion(int orderID) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "UPDATE Orders SET promotionID = ? WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setNull(1, java.sql.Types.INTEGER);
+                pstm.setInt(2, orderID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean applyPromotion(int orderID, int promotionID) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "UPDATE Orders SET promotionID = ? WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, promotionID);
+                pstm.setInt(2, orderID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
     }
 }

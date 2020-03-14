@@ -13,35 +13,27 @@ import java.sql.Timestamp;
  * @author ngochuu
  */
 public class PromotionDTO implements Serializable {
-    private int codeID, percent, quantity, conditionAmount;
-    private String code, status;
+    private int PromotionID, percents, conditionAmount, expiryDate;
+    private String PromotionName, status;
     private Timestamp startedDate, endedDate, createdDate;
 
     public PromotionDTO() {
     }
 
-    public int getCodeID() {
-        return codeID;
+    public int getPromotionID() {
+        return PromotionID;
     }
 
-    public void setCodeID(int codeID) {
-        this.codeID = codeID;
+    public void setPromotionID(int PromotionID) {
+        this.PromotionID = PromotionID;
     }
 
-    public int getPercent() {
-        return percent;
+    public int getPercents() {
+        return percents;
     }
 
-    public void setPercent(int percent) {
-        this.percent = percent;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setPercents(int percents) {
+        this.percents = percents;
     }
 
     public int getConditionAmount() {
@@ -52,12 +44,12 @@ public class PromotionDTO implements Serializable {
         this.conditionAmount = conditionAmount;
     }
 
-    public String getCode() {
-        return code;
+    public String getPromotionName() {
+        return PromotionName;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setPromotionName(String PromotionName) {
+        this.PromotionName = PromotionName;
     }
 
     public String getStatus() {
@@ -90,6 +82,14 @@ public class PromotionDTO implements Serializable {
 
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
+    }
+
+    public int getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(int expiryDate) {
+        this.expiryDate = expiryDate;
     }
     
 }

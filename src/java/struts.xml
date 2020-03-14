@@ -64,5 +64,40 @@
             <result name="success">cart.jsp</result>
         </action>
         
+        <action name="UpdatingQuantityCartAction" class="user.actions.UpdatingQuantityCartAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
+        
+        <action name="DeletingFromCartAction" class="user.actions.DeletingFromCartAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+        </action>
+        
+        <action name="UpdatingRentalDateCartAction" class="user.actions.UpdatingRentalDateCartAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
+        
+        <action name="UpdatingReturnDateCartAction" class="user.actions.UpdatingReturnDateCartAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
+        
+        <action name="ApplyingPromotionAction" class="user.actions.ApplyingPromotionAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
     </package>
 </struts>

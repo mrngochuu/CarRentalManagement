@@ -5,11 +5,13 @@
  */
 package daos;
 
+import dtos.PromotionDTO;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import utils.DatabaseUtils;
 
 /**
  *
@@ -31,5 +33,27 @@ public class PromotionDAO implements Serializable {
         if (conn != null) {
             conn.close();
         }
+    }
+    
+    public PromotionDTO getObjectByID(int promotionID) throws SQLException, ClassNotFoundException {
+        PromotionDTO dto = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT PromotionName, percents FROM promotions WHERE promotionID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, promotionID);
+                rs = pstm.executeQuery();
+                if(rs.next()) {
+                    dto = new PromotionDTO();
+                    dto.setPromotionID(promotionID);
+                    dto.setPromotionName(rs.getString("PromotionName"));
+                    dto.setPercents(rs.getInt("percents"));
+                }
+            }
+        }finally {
+            closeConnection();
+        }
+        return dto;
     }
 }

@@ -13,8 +13,8 @@ import java.sql.Timestamp;
  * @author ngochuu
  */
 public class OrderDTO implements Serializable {
-    private int orderID, codeID;
-    private String receiverName, receiverPhone, receiverAddress, email;
+    private int orderID, promotionID;
+    private String receiverName, receiverPhone, address, email;
     private Timestamp paymentDate;
     private boolean payment;
 
@@ -29,12 +29,12 @@ public class OrderDTO implements Serializable {
         this.orderID = orderID;
     }
 
-    public int getCodeID() {
-        return codeID;
+    public int getPromotionID() {
+        return promotionID;
     }
 
-    public void setCodeID(int codeID) {
-        this.codeID = codeID;
+    public void setPromotionID(int promotionID) {
+        this.promotionID = promotionID;
     }
 
     public String getReceiverName() {
@@ -53,12 +53,12 @@ public class OrderDTO implements Serializable {
         this.receiverPhone = receiverPhone;
     }
 
-    public String getReceiverAddress() {
-        return receiverAddress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setReceiverAddress(String receiverAddress) {
-        this.receiverAddress = receiverAddress;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getEmail() {

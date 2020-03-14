@@ -1,6 +1,6 @@
 <!-- body-content -->
-<div class="row">
-    <div class="col-lg-12 banner">
+<div class="row" style="margin-top: -20px;">
+    <div class="col-lg-12 col-md-12 col-sm-12 banner">
         <div id="demo" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ul class="carousel-indicators">

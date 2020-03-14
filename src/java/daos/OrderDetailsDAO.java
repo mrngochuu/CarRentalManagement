@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -47,20 +48,20 @@ public class OrderDetailsDAO implements Serializable {
                 String sql = "SELECT carID, SUM(quantity) AS total FROM OrderDetails WHERE (status = ? OR status = ?) AND ";
                 if (rentalDate == null && returnDate == null) {
                     //accept 1 day
-                    sql += "rentalDate <= '" + currentDate + "' AND returnDate >= '" + currentDate + "' ";
+                    sql += "(rentalDate <= '" + currentDate + "' AND returnDate >= '" + currentDate + "') ";
                 } else if (rentalDate != null && returnDate == null) {
                     //accept 1 day
-                    sql += "rentalDate <= '" + rentalDate + "' AND returnDate >= '" + rentalDate + "' ";
+                    sql += "(rentalDate <= '" + rentalDate + "' AND returnDate >= '" + rentalDate + "') ";
                 } else if (rentalDate == null && returnDate != null) {
                     //accept currentDate - returnDate
-                    sql += "(returnDate BETWEEN '"+ currentDate +"' AND '"+ returnDate +"') "
-                            + "OR (rentalDate BETWEEN '"+ currentDate +"' AND '"+ returnDate +"') "
-                            + "OR (('" + currentDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate))";
+                    sql += "((returnDate BETWEEN '" + currentDate + "' AND '" + returnDate + "') "
+                            + "OR (rentalDate BETWEEN '" + currentDate + "' AND '" + returnDate + "') "
+                            + "OR (('" + currentDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate))) ";
                 } else {
                     //accept rentalDate - returnDate
-                    sql += "(returnDate BETWEEN '"+ rentalDate +"' AND '"+ returnDate +"') "
-                            + "OR (rentalDate BETWEEN '"+ rentalDate +"' AND '"+ returnDate +"') "
-                            + "OR (('" + rentalDate+ "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate))";
+                    sql += "((returnDate BETWEEN '" + rentalDate + "' AND '" + returnDate + "') "
+                            + "OR (rentalDate BETWEEN '" + rentalDate + "' AND '" + returnDate + "') "
+                            + "OR (('" + rentalDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate)))";
                 }
 
                 sql += "GROUP BY carID";
@@ -81,11 +82,36 @@ public class OrderDetailsDAO implements Serializable {
         return hashtable;
     }
 
-    public boolean checkExist(int orderID, int carID) throws SQLException, ClassNotFoundException  {
+    public int getTotalTheUsedCar(int carID, Timestamp rentalDate, Timestamp returnDate) throws ClassNotFoundException, SQLException {
+        int total = 0;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT SUM(quantity) AS total FROM OrderDetails WHERE (status = ? OR status = ?) AND carID = ? AND "
+                        //accept rentalDate - returnDate
+                        + "((returnDate BETWEEN '" + rentalDate + "' AND '" + returnDate + "') "
+                        + "OR (rentalDate BETWEEN '" + rentalDate + "' AND '" + returnDate + "') "
+                        + "OR (('" + rentalDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate)))";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "wating");
+                pstm.setString(2, "rentaling");
+                pstm.setInt(3, carID);
+                rs = pstm.executeQuery();
+                if (rs.next()) {
+                    total = rs.getInt("total");
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return total;
+    }
+
+    public boolean checkExist(int orderID, int carID) throws SQLException, ClassNotFoundException {
         boolean flag = false;
         try {
             conn = DatabaseUtils.getConnection();
-            if(conn != null) {
+            if (conn != null) {
                 String sql = "SELECT carID FROM OrderDetails WHERE orderID = ? AND carID = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setInt(1, orderID);
@@ -98,18 +124,23 @@ public class OrderDetailsDAO implements Serializable {
         }
         return flag;
     }
-    
-    public boolean insertCart(OrderDetailsDTO orderDetailsDTO) throws SQLException, ClassNotFoundException  {
+
+    public boolean insertCart(OrderDetailsDTO orderDetailsDTO) throws SQLException, ClassNotFoundException {
         boolean flag = false;
         try {
             conn = DatabaseUtils.getConnection();
-            if(conn != null) {
-                String sql = "INSERT INTO OrderDetails (price, quantity, orderID, carID) VALUES (?,?,?,?)";
+            if (conn != null) {
+                String sql = "INSERT INTO OrderDetails (price, quantity, orderID, carID, rentalDate, returnDate) VALUES (?,?,?,?,?,?)";
                 pstm = conn.prepareStatement(sql);
                 pstm.setInt(1, orderDetailsDTO.getPrice());
                 pstm.setInt(2, 1);
                 pstm.setInt(3, orderDetailsDTO.getOrderID());
                 pstm.setInt(4, orderDetailsDTO.getCarID());
+                String nowDate = LocalDateTime.now().toString();
+                int index = nowDate.indexOf("T");
+                nowDate = nowDate.substring(0, index);
+                pstm.setTimestamp(5, Timestamp.valueOf(nowDate + " 00:00:00.000"));
+                pstm.setTimestamp(6, Timestamp.valueOf(nowDate + " 23:59:59.998"));
                 flag = pstm.executeUpdate() > 0;
             }
         } finally {
@@ -117,18 +148,18 @@ public class OrderDetailsDAO implements Serializable {
         }
         return flag;
     }
-    
+
     public List<OrderDetailsDTO> getCart(int orderID) throws SQLException, ClassNotFoundException {
         List<OrderDetailsDTO> list = null;
         try {
             conn = DatabaseUtils.getConnection();
-            if(conn != null) {
+            if (conn != null) {
                 String sql = "SELECT price, quantity, carID, rentalDate, returnDate FROM orderDetails WHERE orderID = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setInt(1, orderID);
                 rs = pstm.executeQuery();
-                while(rs.next()) {
-                    if(list == null) {
+                while (rs.next()) {
+                    if (list == null) {
                         list = new ArrayList<>();
                     }
                     OrderDetailsDTO dto = new OrderDetailsDTO();
@@ -142,8 +173,62 @@ public class OrderDetailsDAO implements Serializable {
                 }
             }
         } finally {
-            
+
         }
         return list;
+    }
+
+    public boolean updateQuantityInCart(int orderID, int carID, int quantity) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "Update orderDetails SET quantity = ? WHERE orderID = ? AND carID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, quantity);
+                pstm.setInt(2, orderID);
+                pstm.setInt(3, carID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean deleteQuantityInCart(int OrderID, int carID) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "DELETE FROM orderDetails WHERE orderID = ? AND carID = ?";
+                pstm = conn.prepareCall(sql);
+                pstm.setInt(1, OrderID);
+                pstm.setInt(2, carID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean updateDateInCart(int orderID, int carID, Timestamp rentalDate, Timestamp returnDate) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "Update orderDetails SET rentalDate = ?, returnDate = ? WHERE orderID = ? AND carID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setTimestamp(1, rentalDate);
+                pstm.setTimestamp(2, returnDate);
+                pstm.setInt(3, orderID);
+                pstm.setInt(4, carID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
     }
 }

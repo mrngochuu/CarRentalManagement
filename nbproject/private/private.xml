@@ -3,13 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/index.jsp</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/UpdatingRentalDateCartAction.java</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/UpdatingQuantityCartAction.java</file>
             <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/daos/OrderDetailsDAO.java</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/LogoutAction.java</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/user/actions/ShowingCartAction.java</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/daos/CarDAO.java</file>
-            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/dtos/OrderDetailsDTO.java</file>
             <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/web/cart.jsp</file>
+            <file>file:/Users/ngochuu/Desktop/LAB_WEB/Submit/CarRental/src/java/struts.xml</file>
         </group>
     </open-files>
 </project-private>

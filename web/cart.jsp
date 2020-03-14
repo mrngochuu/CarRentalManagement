@@ -33,9 +33,9 @@
         <div container-fluid>
             <div class="row">
                 <div class="col-lg-10 col-md-10 col-sm-10 mr-auto ml-auto">
-                    <h2>Your shopping cart</h2>
-                    <h4 class="text-center"><font color="red">${requestScope.MESSAGE}</font></h4>
-                        <s:if test="%{#request.LIST_ORDER_DETAILS != null}">
+                    <s:if test="%{#request.LIST_ORDER_DETAILS != null}">
+                        <h2>Your shopping cart</h2>
+                        <h4 class="text-center"><font color="red"><s:property value="message"/></font></h4>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -46,9 +46,9 @@
                                     <th style="width: 5%; text-align: center;">Quantity</th>
                                     <th style="width: 12%; text-align: center;">Rental Date</th>
                                     <th style="width: 12%; text-align: center;">Return Date</th>
-                                    <th style="width: 5%; text-align: center;">Amount</th>
-                                    <th style="width: 11%; text-align: center;">Status</th>
-                                    <th style="width: 10%; text-align: center;">Delete</th>
+                                    <th style="width: 8%; text-align: center;">Amount</th>
+                                    <th style="width: 16%; text-align: center;">Status</th>
+                                    <th style="width: 2%; text-align: center;">Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -71,44 +71,68 @@
                                         <td>
                                             <form action="UpdatingQuantityCartAction" method="POST">
                                                 <input type="hidden" name="carID" value="<s:property value="#dto.carID"/>"/>
-                                                <input type="hidden" name="rentalDate" value="<s:property value="rentalDate"/>"/>
-                                                <input type="hidden" name="returnDate" value="<s:property value="returnDate"/>"/>
+                                                <input type="hidden" name="rentalDate" value="<s:property value="#dto.rentalDate.date"/>/<s:property value="%{#dto.rentalDate.month + 1}"/>/<s:property value="%{#dto.rentalDate.year + 1900}"/>"/>
+                                                <input type="hidden" name="returnDate" value="<s:property value="#dto.returnDate.date"/>/<s:property value="%{#dto.returnDate.month + 1}"/>/<s:property value="%{#dto.returnDate.year + 1900}"/>"/>
                                                 <input type="number" style="width: 50px;" class="text-center" name="quantity" min="1" value="<s:property value="#dto.quantity"/>" onchange="this.form.submit()"/>
                                             </form>
                                         </td>
                                         <td>
-                                            <form action="UpdatingFromDateCartAction" method="POST">
-                                                <div class="form-group">
-                                                    <div class="input-group date datetimepicker">
-                                                        <input type="text" class="form-control" name="rentalDate" value="<s:property value="#dto.rentalDate.date"/>/<s:property value="#dto.rentalDate.month"/>/<s:property value="%{#dto.rentalDate.year + 1900}"/>" />
-                                                        <span class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                            <s:set var="temp" value="%{(#dto.rentalDate.year + 1900) + '-'}"/>
+                                            <s:set var="month" value="%{#dto.rentalDate.month + 1}"/>
+                                            <s:if test="%{#month < 10}">
+                                                <s:set var="temp" value="%{#temp + '0' + #month + '-'}"/>
+                                            </s:if>
+                                            <s:else>
+                                                <s:set var="temp" value="%{#temp + #month + '-'}"/>
+                                            </s:else>
+                                            <s:if test="%{#dto.rentalDate.date < 10}">
+                                                <s:set var="temp" value="%{#temp + '0' + #dto.rentalDate.date}"/>
+                                            </s:if>
+                                            <s:else>
+                                                <s:set var="temp" value="%{#temp + #dto.rentalDate.date}"/>
+                                            </s:else>
+
+                                            <form action="UpdatingRentalDateCartAction" method="POST">
+                                                <input type="hidden" name="carID" value="<s:property value="#dto.carID"/>"/>
+                                                <input type="hidden" name="returnDate" value="<s:property value="#dto.returnDate.date"/>/<s:property value="%{#dto.returnDate.month + 1}"/>/<s:property value="%{#dto.returnDate.year + 1900}"/>"/>
+                                                <input type="date" class="text-center" name="rentalDate" value="<s:property value="temp"/>" onchange="this.form.submit()"/>
                                             </form>
                                         </td>
                                         <td>
-                                            <form action="UpdatingToDateCartAction" method="POST">
-                                                <div class="form-group">
-                                                    <div class="input-group date datetimepicker">
-                                                        <input type="text" class="form-control" name="returnDate" value="<s:property value="#dto.returnDate.date"/>/<s:property value="#dto.returnDate.month"/>/<s:property value="%{#dto.returnDate.year + 1900}"/>" />
-                                                        <span class="input-group-addon">
-                                                            <span class="glyphicon glyphicon-calendar"></span>
-                                                        </span>
-                                                    </div>
-                                                </div>
+
+                                            <s:set var="temp" value="%{(#dto.returnDate.year + 1900) + '-'}"/>
+                                            <s:set var="month" value="%{#dto.returnDate.month + 1}"/>
+                                            <s:if test="%{#month < 10}">
+                                                <s:set var="temp" value="%{#temp + '0' + #month + '-'}"/>
+                                            </s:if>
+                                            <s:else>
+                                                <s:set var="temp" value="%{#temp + #month + '-'}"/>
+                                            </s:else>
+                                            <s:if test="%{#dto.returnDate.date < 10}">
+                                                <s:set var="temp" value="%{#temp + '0' + #dto.returnDate.date}"/>
+                                            </s:if>
+                                            <s:else>
+                                                <s:set var="temp" value="%{#temp + #dto.returnDate.date}"/>
+                                            </s:else>
+                                            <form action="UpdatingReturnDateCartAction" method="POST">
+                                                <input type="hidden" name="carID" value="<s:property value="#dto.carID"/>"/>
+                                                <input type="hidden" name="rentalDate" value="<s:property value="#dto.rentalDate.date"/>/<s:property value="%{#dto.rentalDate.month + 1}"/>/<s:property value="%{#dto.rentalDate.year + 1900}"/>"/>
+                                                <input type="date" class="text-center" name="returnDate" value="<s:property value="temp"/>" onchange="this.form.submit()"/>
                                             </form>
                                         </td>
                                         <td>
                                             <p class="text-center">$<s:property value="%{#dto.price * #dto.quantity * #request.HASHTABLE_DAY[#dto.carID]}"/></p>
                                         </td>
                                         <td>
-                                            <p class="text-center">$<s:property value="#statusMessage"/></p>
-                                        </td>
-                                        <td>
-                                            <form action="DeletingFromCartAction" class="form-signin">
-                                                <input type="submit" class="form-control btn btn-danger" value="Delete"/>
+                                            <s:if test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Availabel'}"><p class="text-center text-success"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:if>
+                                            <s:elseif test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Inavailable'}"><p class="text-center text-danger"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:elseif>
+                                            <s:elseif test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Date mismatch'}"><p class="text-center text-danger"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:elseif>
+                                            <s:else><p class="text-center text-warning"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:else>
+                                            </td>
+                                            <td>
+                                                <form action="DeletingFromCartAction" class="form-signin" method="POST">
+                                                    <input type="hidden" name="carID" value="<s:property value="#dto.carID"/>"/>
+                                                <button type="submit" class="ml-3 bg-transparent delete-button"><i class="fas fa-trash text-danger"></i></button>
                                             </form>
                                         </td>
                                     </tr>
@@ -116,34 +140,48 @@
                             </tbody>
                             <tfoot>
                                 <tr>
-                                    <td colspan="6"></td>
+                                    <td colspan="8">
+                                        <s:if test="#request.PROMOTION == null">
+                                            <form action="ApplyingPromotionAction" method="POST">
+                                                <input type="text" name="code" class="d-inline" placeholder="Promotion code">
+                                                <button type="submit" class="btn btn-primary">Apply</button>
+                                            </form>
+                                        </s:if>
+                                        <s:else>
+                                            <h4 class="text-info">Promotion applied: <s:property value="#request.PROMOTION.promotionName"/></h4>
+                                        </s:else>
+                                    </td>
                                     <td class="text-center" colspan="1"><strong>Total</strong></td>
-                                    <td class="text-center"><strong>$<s:property value="#total"/></strong></td>
-                                    <td colspan="2"></td>
+                                    <td class="text-center">
+                                        <strong>$<s:property value="#total"/></strong><br><br>
+                                        <s:if test="%{#request.PROMOTION != null}">
+                                            <strong>- <s:property value="#request.PROMOTION.percents"/>%</strong>
+                                            <hr>
+                                            <strong>$<s:property value="%{(#total/100) * (100 - #request.PROMOTION.percents)}"/></strong>
+                                        </s:if>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">
-                                        <a href="${homeLink}" class="btn btn-primary text-center">Home</a>
-                                    </td>
-                                    <td colspan="4"></td>
+                                    <td colspan="8"></td>
                                     <td colspan="2"><a href="orderDetails.jsp" class="btn btn-danger float-right">Click continue to pay</a></td>
                                 </tr>
                             </tfoot>
                         </table>
                     </s:if>
                     <s:else>
-                        <h4 class="text-center">There is no added product!</h4>
+                        <h1 class="text-center">There is no added product!</h1>
                     </s:else>
                 </div>
             </div>
         </div>
         <s:include value="layout/footer.jsp"/>
         <script type="text/javascript">
-            $(function () {
-                $(".datetimepicker").datetimepicker({
-                    format: "DD/MM/YYYY"
-                });
-                
+            $(".delete-button").click(function () {
+                if (confirm("Do you want to delete the car from cart?")) {
+                    this.form.submit();
+                } else {
+                    return false;
+                }
             });
         </script>
     </body>

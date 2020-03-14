@@ -147,7 +147,7 @@ public class CarDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if(conn != null) {
-                String sql = "SELECT carName, categoryID, model, imgURL FROM Cars WHERE carID = ?";
+                String sql = "SELECT carName, categoryID, model, quantity, imgURL, status FROM Cars WHERE carID = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setInt(1, carID);
                 rs = pstm.executeQuery();
@@ -158,6 +158,8 @@ public class CarDAO implements Serializable {
                     dto.setCategoryID(rs.getInt("categoryID"));
                     dto.setModel(rs.getString("model"));
                     dto.setImgURL(rs.getString("imgURL"));
+                    dto.setQuantity(rs.getInt("quantity"));
+                    dto.setStatus(rs.getString("status"));
                 }
             }
         } finally {
