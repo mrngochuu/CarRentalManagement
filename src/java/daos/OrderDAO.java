@@ -11,6 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import utils.DatabaseUtils;
 
 /**
@@ -40,10 +44,11 @@ public class OrderDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT orderID, promotionID FROM orders WHERE email = ? AND isPayment = ?";
+                String sql = "SELECT orderID, promotionID FROM orders WHERE email = ? AND isPayment = ? AND status = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setString(1, email);
                 pstm.setBoolean(2, payment);
+                pstm.setString(3, "active");
                 rs = pstm.executeQuery();
                 if (rs.next()) {
                     dto = new OrderDTO();
@@ -63,11 +68,13 @@ public class OrderDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if (conn != null) {
-                String sql = "INSERT INTO orders (email, isPayment) VALUES (?,?)";
+                String sql = "INSERT INTO orders (email, isPayment, promotionID, status) VALUES (?,?,?,?)";
                 String generatedColumns[] = {"OrderID"};
                 pstm = conn.prepareStatement(sql, generatedColumns);
                 pstm.setString(1, email);
                 pstm.setBoolean(2, false);
+                pstm.setNull(3, java.sql.Types.INTEGER);
+                pstm.setString(4, "active");
                 if(pstm.executeUpdate() > 0) {
                     rs = pstm.getGeneratedKeys();
                     if(rs.next()) {
@@ -112,6 +119,86 @@ public class OrderDAO implements Serializable {
                 flag = pstm.executeUpdate() > 0;
             }
         } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean payCart(int orderID, String receiverName, String receiverPhone, String address) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "UPDATE Orders SET receiverName = ?, receiverPhone = ?, address = ?, paymentDate = ?, isPayment = ? WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, receiverName);
+                pstm.setString(2, receiverPhone);
+                pstm.setString(3, address);
+                pstm.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+                pstm.setBoolean(5, true);
+                pstm.setInt(6, orderID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public List<OrderDTO> getPaymentOrder(String email, Timestamp fromDate, Timestamp toDate) throws ClassNotFoundException, SQLException {
+        List<OrderDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT orderID, receiverName, receiverPhone, address, paymentDate, promotionID FROM Orders WHERE email = ? AND isPayment = ? AND status = ?";
+                if(fromDate != null) {
+                    sql += " AND paymentDate >= '" + fromDate.toString() + "'";
+                }
+                
+                if(toDate != null) {
+                    sql += " AND paymentDate <= '" + toDate.toString() + "'";
+                }
+                
+                sql += " ORDER BY paymentDate DESC";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, email);
+                pstm.setBoolean(2, true);
+                pstm.setString(3, "active");
+                rs = pstm.executeQuery();
+                while(rs.next()) {
+                    if(list == null) {
+                        list = new ArrayList<>();
+                    }
+                    OrderDTO dto = new OrderDTO();
+                    dto.setEmail(email);
+                    dto.setPayment(true);
+                    dto.setOrderID(rs.getInt("orderID"));
+                    dto.setReceiverName(rs.getString("receiverName"));
+                    dto.setReceiverPhone(rs.getString("receiverPhone"));
+                    dto.setAddress(rs.getString("address"));
+                    dto.setPaymentDate(rs.getTimestamp("paymentDate"));
+                    dto.setPromotionID(rs.getInt("promotionID"));
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+    
+    public boolean updateStatusOrder(int orderID, String status) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "UPDATE Orders SET status = ? WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, status);
+                pstm.setInt(2, orderID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        }finally {
             closeConnection();
         }
         return flag;

@@ -98,33 +98,33 @@ public class SearchingCarAction {
         Hashtable<Integer, Integer> usedCar = null;
         List<CarDTO> listCar = null;
         OrderDetailsDAO orderDetailsDAO = new OrderDetailsDAO();
-
         CarDAO carDAO = new CarDAO();
+        
         if ((txtSearch == null && cbCategory == null && fromDate == null && toDate == null && priceMin == null && priceMax == null)
-                || (txtSearch.isEmpty() && cbCategory.equals("0") && fromDate.isEmpty() && toDate.isEmpty() && priceMin.isEmpty() && priceMax.isEmpty())) {
+                || (txtSearch.trim().isEmpty() && cbCategory.equals("0") && fromDate.trim().isEmpty() && toDate.trim().isEmpty() && priceMin.trim().isEmpty() && priceMax.trim().isEmpty())) {
             usedCar = orderDetailsDAO.getTotalCarRentalingWithDate(null, null, Timestamp.valueOf(LocalDateTime.now()));
             listCar = carDAO.findCarsWithoutConditions(usedCar, "active");
             request.setAttribute("LIST_CAR", listCar);
         } else {
-            if (fromDate.isEmpty() && toDate.isEmpty()) {
+            if (fromDate.trim().isEmpty() && toDate.trim().isEmpty()) {
                 usedCar = orderDetailsDAO.getTotalCarRentalingWithDate(null, null, Timestamp.valueOf(LocalDateTime.now()));
-            } else if (!fromDate.isEmpty() && toDate.isEmpty()) {
-                String[] temp = fromDate.split("/");
+            } else if (!fromDate.trim().isEmpty() && toDate.trim().isEmpty()) {
+                String[] temp = fromDate.trim().split("/");
                 String fromDateStr = temp[2] + "-" + temp[1] + "-" + temp[0] + " 00:00:00.000";
                 usedCar = orderDetailsDAO.getTotalCarRentalingWithDate(Timestamp.valueOf(fromDateStr), null, Timestamp.valueOf(LocalDateTime.now()));
-            } else if (fromDate.isEmpty() && !toDate.isEmpty()) {
-                String[] temp = toDate.split("/");
+            } else if (fromDate.trim().isEmpty() && !toDate.trim().isEmpty()) {
+                String[] temp = toDate.trim().split("/");
                 String toDateStr = temp[2] + "-" + temp[1] + "-" + temp[0] + " 23:59:59.999";
                 usedCar = orderDetailsDAO.getTotalCarRentalingWithDate(null, Timestamp.valueOf(toDateStr), Timestamp.valueOf(LocalDateTime.now()));
             } else {
-                String[] temp = fromDate.split("/");
+                String[] temp = fromDate.trim().split("/");
                 String fromDateStr = temp[2] + "-" + temp[1] + "-" + temp[0] + " 00:00:00.000";
-                temp = toDate.split("/");
+                temp = toDate.trim().split("/");
                 String toDateStr = temp[2] + "-" + temp[1] + "-" + temp[0] + " 23:59:59.999";
                 usedCar = orderDetailsDAO.getTotalCarRentalingWithDate(Timestamp.valueOf(fromDateStr), Timestamp.valueOf(toDateStr), Timestamp.valueOf(LocalDateTime.now()));
             }
             
-            listCar = carDAO.findCarsWithConditions(usedCar, "active", txtSearch, cbCategory, priceMin, priceMax);
+            listCar = carDAO.findCarsWithConditions(usedCar, "active", txtSearch.trim(), cbCategory, priceMin, priceMax);
             request.setAttribute("LIST_CAR", listCar);
         }
         return SUCCESS;

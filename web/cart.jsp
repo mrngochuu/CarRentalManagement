@@ -124,8 +124,8 @@
                                             <p class="text-center">$<s:property value="%{#dto.price * #dto.quantity * #request.HASHTABLE_DAY[#dto.carID]}"/></p>
                                         </td>
                                         <td>
-                                            <s:if test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Availabel'}"><p class="text-center text-success"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:if>
-                                            <s:elseif test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Inavailable'}"><p class="text-center text-danger"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:elseif>
+                                            <s:if test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Available'}"><p class="text-center text-success"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:if>
+                                            <s:elseif test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Unavailable'}"><p class="text-center text-danger"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:elseif>
                                             <s:elseif test="%{#request.HASHTABLE_STATUS[#dto.carID] == 'Date mismatch'}"><p class="text-center text-danger"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:elseif>
                                             <s:else><p class="text-center text-warning"><s:property value="%{#request.HASHTABLE_STATUS[#dto.carID]}"/></p></s:else>
                                             </td>
@@ -157,13 +157,13 @@
                                         <s:if test="%{#request.PROMOTION != null}">
                                             <strong>- <s:property value="#request.PROMOTION.percents"/>%</strong>
                                             <hr>
-                                            <strong>$<s:property value="%{(#total/100) * (100 - #request.PROMOTION.percents)}"/></strong>
+                                            <strong>$<s:property value="%{(#total * (100 - #request.PROMOTION.percents))/100}"/></strong>
                                         </s:if>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="8"></td>
-                                    <td colspan="2"><a href="orderDetails.jsp" class="btn btn-danger float-right">Click continue to pay</a></td>
+                                    <td colspan="2"><a href="payment.jsp" class="btn btn-danger float-right">Click continue to pay</a></td>
                                 </tr>
                             </tfoot>
                         </table>

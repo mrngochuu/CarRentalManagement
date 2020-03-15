@@ -99,5 +99,32 @@
                 <param name="message">${message}</param>
             </result>
         </action>
+        
+        <action name="PaymentAction" class="user.actions.PaymentAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SearchingCarAction</param>
+                <param name="message">${message}</param>
+            </result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+            <result name="input">payment.jsp</result>
+        </action>
+        
+        <action name="SearchingHistoryAction" class="user.actions.SearchingHistoryAction">
+            <result name="success">history.jsp</result>
+        </action>
+        
+        <action name="DeletingHistoryAction" class="user.actions.DeletingHistoryAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SearchingHistoryAction</param>
+                <param name="message">${message}</param>
+                <param name="txtSearch">${txtSearch}</param>
+                <param name="fromDate">${fromDate}</param>
+                <param name="toDate">${toDate}</param>
+            </result>
+        </action>
+        
     </package>
 </struts>

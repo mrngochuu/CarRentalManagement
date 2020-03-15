@@ -66,7 +66,7 @@ public class OrderDetailsDAO implements Serializable {
 
                 sql += "GROUP BY carID";
                 pstm = conn.prepareStatement(sql);
-                pstm.setString(1, "wating");
+                pstm.setString(1, "waiting");
                 pstm.setString(2, "rentaling");
                 rs = pstm.executeQuery();
                 while (rs.next()) {
@@ -81,7 +81,7 @@ public class OrderDetailsDAO implements Serializable {
         }
         return hashtable;
     }
-
+    
     public int getTotalTheUsedCar(int carID, Timestamp rentalDate, Timestamp returnDate) throws ClassNotFoundException, SQLException {
         int total = 0;
         try {
@@ -93,7 +93,7 @@ public class OrderDetailsDAO implements Serializable {
                         + "OR (rentalDate BETWEEN '" + rentalDate + "' AND '" + returnDate + "') "
                         + "OR (('" + rentalDate + "' BETWEEN rentalDate AND returnDate) AND ('" + returnDate + "' BETWEEN rentalDate AND returnDate)))";
                 pstm = conn.prepareStatement(sql);
-                pstm.setString(1, "wating");
+                pstm.setString(1, "waiting");
                 pstm.setString(2, "rentaling");
                 pstm.setInt(3, carID);
                 rs = pstm.executeQuery();
@@ -154,7 +154,7 @@ public class OrderDetailsDAO implements Serializable {
         try {
             conn = DatabaseUtils.getConnection();
             if (conn != null) {
-                String sql = "SELECT price, quantity, carID, rentalDate, returnDate FROM orderDetails WHERE orderID = ?";
+                String sql = "SELECT price, quantity, carID, rentalDate, returnDate, status FROM orderDetails WHERE orderID = ?";
                 pstm = conn.prepareStatement(sql);
                 pstm.setInt(1, orderID);
                 rs = pstm.executeQuery();
@@ -169,6 +169,7 @@ public class OrderDetailsDAO implements Serializable {
                     dto.setQuantity(rs.getInt("quantity"));
                     dto.setRentalDate(rs.getTimestamp("rentalDate"));
                     dto.setReturnDate(rs.getTimestamp("returnDate"));
+                    dto.setStatus(rs.getString("status"));
                     list.add(dto);
                 }
             }
@@ -224,6 +225,23 @@ public class OrderDetailsDAO implements Serializable {
                 pstm.setTimestamp(2, returnDate);
                 pstm.setInt(3, orderID);
                 pstm.setInt(4, carID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean updateWatingStatus(int orderID) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "Update orderDetails SET status = ? WHERE orderID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "waiting");
+                pstm.setInt(2, orderID);
                 flag = pstm.executeUpdate() > 0;
             }
         } finally {

@@ -11,6 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import utils.DatabaseUtils;
 
 /**
@@ -55,5 +59,34 @@ public class PromotionDAO implements Serializable {
             closeConnection();
         }
         return dto;
+    }
+    
+    public List<PromotionDTO> getPromotionIDWithCondition(int totalAmount) throws ClassNotFoundException, SQLException {
+        List<PromotionDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT promotionID, expiryDate, promotionName From promotions WHERE status = ? AND (startedDate <= ? AND EndedDate >= ?) AND conditionAmount < ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "active");
+                pstm.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+                pstm.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                pstm.setInt(4, totalAmount);
+                rs = pstm.executeQuery();
+                while(rs.next()) {
+                    if(list == null) {
+                        list = new ArrayList<>();
+                    }
+                    PromotionDTO dto = new PromotionDTO();
+                    dto.setPromotionID(rs.getInt("promotionID"));
+                    dto.setExpiryDate(rs.getInt("expiryDate"));
+                    dto.setPromotionName(rs.getString("promotionName"));
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
     }
 }

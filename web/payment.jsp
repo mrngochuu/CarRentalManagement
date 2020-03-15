@@ -21,14 +21,14 @@
                             <h3 class="card-title text-center mb-5">PAYMENT FORM</h3>
                             <h6 class="mb-3">Hello <s:property value="#session.USER.fullname"/>, please fill in the information below to complete payment.</h6>
                             <form action="PaymentAction" method="POST" class="form-signin">
-                                <input type="text" name="receiverName" placeholder="Receiver's name" class="form-control mb-3" />
+                                <input type="text" name="receiverName" placeholder="Receiver's name" class="form-control mb-3" value="<s:property value="receiverName"/>"/>
                                 <font class="mb-3" color="red"><p class="mb-3"><s:fielderror fieldName="receiverName"/></p></font>
 
-                                <input type="text" name="receiverPhone" placeholder="Receiver's phone number" class="form-control mb-3" />
+                                    <input type="text" name="receiverPhone" placeholder="Receiver's phone number" class="form-control mb-3" value="<s:property value="receiverPhone"/>" />
                                 <font class="mb-3" color="red"><p class="mb-3"><s:fielderror fieldName="receiverPhone"/></p></font>
 
-                                <input type="text" name="address" placeholder="Pick up address" class="form-control mb-3" />
-                                <font color="red"><p class="mb-3">${requestScope.INVALID.addressError}</p></font>
+                                <input type="text" name="address" placeholder="Pick up address" class="form-control mb-3" value="<s:property value="address"/>" />
+                                <font color="red"><p class="mb-3"><s:fielderror fieldName="address"/></p></font>
 
                                 <button type="submit" class="btn btn-lg btn-primary btn-block text-uppercase mb-3">Complete the payment</button>
                             </form>

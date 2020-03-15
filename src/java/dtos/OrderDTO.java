@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  */
 public class OrderDTO implements Serializable {
     private int orderID, promotionID;
-    private String receiverName, receiverPhone, address, email;
+    private String receiverName, receiverPhone, address, email, status;
     private Timestamp paymentDate;
     private boolean payment;
 
@@ -83,6 +83,14 @@ public class OrderDTO implements Serializable {
 
     public void setPayment(boolean payment) {
         this.payment = payment;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
     
 }

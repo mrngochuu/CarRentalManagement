@@ -19,9 +19,9 @@
     <div class="collapse navbar-collapse flex-grow-0" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
             <s:if test="%{#session.ROLE.roleName == 'customer'}">
-                <s:url action="ShowingHistoryAction" var="showingHistoryLink"/>
+                <s:url action="SearchingHistoryAction" var="searchHistoryLink"/>
                 <li class="nav-item">
-                    <a class="nav-link ml-3" href="<s:property value="#showingHistoryLink"/>"><i class="fas fa-history mr-1"></i>History</a>
+                    <a class="nav-link ml-3" href="<s:property value="#searchHistoryLink"/>"><i class="fas fa-history mr-1"></i>History</a>
                 </li>
                 <s:url action="ShowingCartAction" var="showingCartLink"/>
                 <li class="nav-item">

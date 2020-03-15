@@ -85,4 +85,85 @@ public class PromotionDetailsDAO implements Serializable {
         }
         return promotionID;
     }
+    
+    public boolean checkAvailablePromotion(int promotionID, String email, String status) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT promotionID FROM PromotionDetails WHERE promotionID = ? AND"
+                        + " email = ? AND"
+                        + " status = ? AND"
+                        + " expiriedDate > ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, promotionID);
+                pstm.setString(2, email);
+                pstm.setString(3, status);
+                pstm.setTimestamp(4, Timestamp.valueOf(LocalDateTime.now()));
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean updateStatusUsedPromotion(int promotionID, String email, String status) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "UPDATE PromotionDetails SET status = ? WHERE promotionID = ? AND email = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, status);
+                pstm.setInt(2, promotionID);
+                pstm.setString(3, email);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean checkExistPromotion(int promotionID, String email) throws ClassNotFoundException, SQLException {
+        boolean flag = true;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT promotionID FROM PromotionDetails WHERE promotionID = ? AND email = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, promotionID);
+                pstm.setString(2, email);
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean insertPromotion(int promotionID, String email, int expiriedDate, String code) throws ClassNotFoundException, SQLException {
+        boolean flag = true;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "INSERT INTO PromotionDetails VALUES(?,?,?,?,?,?)";
+                pstm = conn.prepareStatement(sql);
+                pstm.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+                pstm.setString(2, email);
+                pstm.setInt(3, promotionID);
+                pstm.setTimestamp(4, new Timestamp(Timestamp.valueOf(LocalDateTime.now()).getTime() + (((long)expiriedDate) * 24 * 60 * 60 * 1000)));
+                pstm.setString(5, code);
+                pstm.setString(6, "available");
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
 }

@@ -87,35 +87,30 @@ public class ShowingCartAction {
 
                                 //get total rental date
                                 long diff = dto.getReturnDate().getTime() - dto.getRentalDate().getTime();
-                                int diffMinutes = (int) (diff / (60 * 1000) % 60);
                                 int diffHours = (int) (diff / (60 * 60 * 1000) % 24);
                                 int diffDays = (int) (diff / (24 * 60 * 60 * 1000));
-
-                                if (diffMinutes >= 30) {
-                                    diffHours++;
-                                }
 
                                 if (diffHours >= 1) {
                                     diffDays++;
                                 }
                                 hashtableDay.put(dto.getCarID(), diffDays);
                             }
+                        } else {
+                            hashtableStatus.put(dto.getCarID(), "Unavailable");
                         }
-                    } else {
-                        hashtableStatus.put(dto.getCarID(), "Inavailabel");
                     }
                 }
                 request.setAttribute("HASHTABLE_STATUS", hashtableStatus);
                 request.setAttribute("HASHTABLE_DAY", hashtableDay);
                 request.setAttribute("HASHTABLE_CAR", hashtableCar);
-            
+
                 //get promotion
-                if(orderDTO.getPromotionID() != 0) {
+                if (orderDTO.getPromotionID() != 0) {
                     OrderDAO orderDAO = new OrderDAO();
                     PromotionDTO promotionDTO = new PromotionDAO().getObjectByID(orderDTO.getPromotionID());
                     PromotionDetailsDTO promotionDetailsDTO = new PromotionDetailsDAO().getPromotionOfUser(orderDTO.getPromotionID(), userDTO.getEmail(), "available");
-                    if(promotionDTO == null || promotionDetailsDTO == null || promotionDetailsDTO.getExpiriedDate().getTime() <= currentDate.getTime()) {
-                        if(orderDAO.updateNULLPromotion(orderDTO.getOrderID())) {
+                    if (promotionDTO == null || promotionDetailsDTO == null || promotionDetailsDTO.getExpiriedDate().getTime() <= currentDate.getTime()) {
+                        if (orderDAO.updateNULLPromotion(orderDTO.getOrderID())) {
                             orderDTO = orderDAO.getObjectByEmail(userDTO.getEmail(), false);
                             session.put("ORDER", orderDTO);
                         }
