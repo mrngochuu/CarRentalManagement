@@ -47,7 +47,7 @@
             <result name="success">index.jsp</result>
         </action>
         
-        <action name="AddingCartAction" class="user.actions.AddingCartAction">
+        <action name="AddingCartAction" class="customer.actions.AddingCartAction">
             <result name="success" type="redirectAction">
                 <param name="actionName">SearchingCarAction</param>
                 <param name="message">${message}</param>
@@ -60,11 +60,11 @@
             </result>
         </action>
         
-        <action name="ShowingCartAction" class="user.actions.ShowingCartAction">
+        <action name="ShowingCartAction" class="customer.actions.ShowingCartAction">
             <result name="success">cart.jsp</result>
         </action>
         
-        <action name="UpdatingQuantityCartAction" class="user.actions.UpdatingQuantityCartAction">
+        <action name="UpdatingQuantityCartAction" class="customer.actions.UpdatingQuantityCartAction">
             <result name="success" type="redirectAction">ShowingCartAction</result>
             <result name="invalid" type="redirectAction">
                 <param name="actionName">ShowingCartAction</param>
@@ -72,19 +72,11 @@
             </result>
         </action>
         
-        <action name="DeletingFromCartAction" class="user.actions.DeletingFromCartAction">
+        <action name="DeletingFromCartAction" class="customer.actions.DeletingFromCartAction">
             <result name="success" type="redirectAction">ShowingCartAction</result>
         </action>
         
-        <action name="UpdatingRentalDateCartAction" class="user.actions.UpdatingRentalDateCartAction">
-            <result name="success" type="redirectAction">ShowingCartAction</result>
-            <result name="invalid" type="redirectAction">
-                <param name="actionName">ShowingCartAction</param>
-                <param name="message">${message}</param>
-            </result>
-        </action>
-        
-        <action name="UpdatingReturnDateCartAction" class="user.actions.UpdatingReturnDateCartAction">
+        <action name="UpdatingRentalDateCartAction" class="customer.actions.UpdatingRentalDateCartAction">
             <result name="success" type="redirectAction">ShowingCartAction</result>
             <result name="invalid" type="redirectAction">
                 <param name="actionName">ShowingCartAction</param>
@@ -92,7 +84,7 @@
             </result>
         </action>
         
-        <action name="ApplyingPromotionAction" class="user.actions.ApplyingPromotionAction">
+        <action name="UpdatingReturnDateCartAction" class="customer.actions.UpdatingReturnDateCartAction">
             <result name="success" type="redirectAction">ShowingCartAction</result>
             <result name="invalid" type="redirectAction">
                 <param name="actionName">ShowingCartAction</param>
@@ -100,7 +92,15 @@
             </result>
         </action>
         
-        <action name="PaymentAction" class="user.actions.PaymentAction">
+        <action name="ApplyingPromotionAction" class="customer.actions.ApplyingPromotionAction">
+            <result name="success" type="redirectAction">ShowingCartAction</result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCartAction</param>
+                <param name="message">${message}</param>
+            </result>
+        </action>
+        
+        <action name="PaymentAction" class="customer.actions.PaymentAction">
             <result name="success" type="redirectAction">
                 <param name="actionName">SearchingCarAction</param>
                 <param name="message">${message}</param>
@@ -112,17 +112,34 @@
             <result name="input">payment.jsp</result>
         </action>
         
-        <action name="SearchingHistoryAction" class="user.actions.SearchingHistoryAction">
+        <action name="SearchingHistoryAction" class="customer.actions.SearchingHistoryAction">
             <result name="success">history.jsp</result>
         </action>
         
-        <action name="DeletingHistoryAction" class="user.actions.DeletingHistoryAction">
+        <action name="DeletingHistoryAction" class="customer.actions.DeletingHistoryAction">
             <result name="success" type="redirectAction">
                 <param name="actionName">SearchingHistoryAction</param>
                 <param name="message">${message}</param>
                 <param name="txtSearch">${txtSearch}</param>
                 <param name="fromDate">${fromDate}</param>
                 <param name="toDate">${toDate}</param>
+            </result>
+        </action>
+        
+        <action name="ShowingCarAction" class="user.actions.ShowingCarAction">
+            <result name="success">car.jsp</result>
+        </action>
+        
+        <action name="FeedbackAction" class="customer.actions.FeedbackAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">ShowingCarAction</param>
+                <param name="message">${message}</param>
+                <param name="carID">${carID}</param>
+            </result>
+            <result name="invalid" type="redirectAction">
+                <param name="actionName">ShowingCarAction</param>
+                <param name="carID">${carID}</param>
+                <param name="message">${message}</param>
             </result>
         </action>
         

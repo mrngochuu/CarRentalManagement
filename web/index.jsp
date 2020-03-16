@@ -133,7 +133,7 @@
                                                             <hr>
                                                             <div class="row">
                                                                 <div class="col-lg-5 col-md-5 col-sm-5 mr-auto ml-auto">
-                                                                    <form action="ShowingCarDetailsAction" method="POST">
+                                                                    <form action="ShowingCarAction" method="POST">
                                                                         <input type="hidden" name="carID" value="<s:property value="#carDTO.carID"/>"/>
                                                                         <input class="btn btn-info btn-outline-secondary form-control" type="submit" value="See Details"/>
                                                                     </form>

@@ -79,16 +79,16 @@
                                         <table class="table table-striped">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 13%; text-align: center;">Image</th>
-                                                    <th style="width: 13%; text-align: center;">Name</th>
+                                                    <th style="width: 12%; text-align: center;">Image</th>
+                                                    <th style="width: 12%; text-align: center;">Name</th>
                                                     <th style="width: 10%; text-align: center;">Category</th>
-                                                    <th style="width: 10%; text-align: center;">Price</th>
+                                                    <th style="width: 8%; text-align: center;">Price</th>
                                                     <th style="width: 5%; text-align: center;">Quantity</th>
                                                     <th style="width: 12%; text-align: center;">Rental Date</th>
                                                     <th style="width: 12%; text-align: center;">Return Date</th>
                                                     <th style="width: 5%; text-align: center;">Amount</th>
                                                     <th style="width: 10%; text-align: center;">Status</th>
-                                                    <th style="width: 10%; text-align: center;">Feedback</th>
+                                                    <th style="width: 12%; text-align: center;">Feedback</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -101,9 +101,9 @@
                                                         <td>
                                                             <s:if test="%{#request.HASHTABLE_CAR[#record.carID].carName.toLowerCase().contains(txtSearch.toLowerCase()) && txtSearch.length() > 0}"><p class="text-center font-weight-bold bg-warning"><s:property value="#request.HASHTABLE_CAR[#record.carID].carName"/> - <s:property value="#request.HASHTABLE_CAR[#record.carID].model"/></p></s:if>
                                                             <s:else><p class="text-center font-weight-bold"><s:property value="#request.HASHTABLE_CAR[#record.carID].carName"/> - <s:property value="#request.HASHTABLE_CAR[#record.carID].model"/></p></s:else>
-                                                        </td>
-                                                        <td>
-                                                            <p class="text-center"><s:property value="#session.HASHTABLE_CATEGORY[#request.HASHTABLE_CAR[#record.carID].categoryID]"/></p>
+                                                            </td>
+                                                            <td>
+                                                                <p class="text-center"><s:property value="#session.HASHTABLE_CATEGORY[#request.HASHTABLE_CAR[#record.carID].categoryID]"/></p>
                                                         </td>
                                                         <td>
                                                             <p class="text-center">$<s:property value="#record.price"/>/day</p>
@@ -124,14 +124,20 @@
                                                         <td>
                                                             <s:if test="%{#record.status == 'waiting'}"><p class="text-center text-warning">Waiting</p></s:if>
                                                             <s:if test="%{#record.status == 'rentaling'}"><p class="text-center text-success">Rentaling</p></s:if>
-                                                            <s:if test="%{#record.status == 'returned'}"><p class="text-center text-danger">Returned</p></s:if>
+                                                            <s:if test="%{#record.status == 'returned'}"><p class="text-center text-info">Returned</p></s:if>
                                                             </td>
                                                             <td>
-                                                                <form action="ShowingRecordAction" method="POST">
-                                                                    
+                                                            <s:if test="%{#record.status == 'returned'}">
+                                                                <form action="ShowingCarAction" method="POST">
+                                                                    <input type="hidden" name="carID" value="<s:property value="#record.carID"/>"/>
+                                                                    <input type="submit" class="btn btn-info" value="Feedback"/>
                                                                 </form>
-                                                            </td>
-                                                        </tr>
+                                                            </s:if>
+                                                            <s:else>
+                                                                <p class="text-center">---</p>
+                                                            </s:else>
+                                                        </td>
+                                                    </tr>
                                                 </s:iterator>
                                             </tbody>
                                             <tfoot>
@@ -165,7 +171,6 @@
                                     </div>
                                 </s:if>
                             </s:iterator>
-
                         </s:else>
                     </div>
                 </div>

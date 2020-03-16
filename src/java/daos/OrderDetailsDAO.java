@@ -249,4 +249,23 @@ public class OrderDetailsDAO implements Serializable {
         }
         return flag;
     }
+    
+    public boolean checkConditionToFeedback(int orderID, int carID, String status) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT orderID FROM OrderDetails WHERE orderID = ? AND carID = ? AND status = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, orderID);
+                pstm.setInt(2, carID);
+                pstm.setString(3, status);
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
 }
