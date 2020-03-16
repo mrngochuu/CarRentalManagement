@@ -41,11 +41,9 @@
                                 <s:submit cssClass="btn btn-lg btn-primary btn-block text-uppercase mb-3" value="Register"/>
                             </s:form>
                             <hr class="mb-3">
+                            <s:url action="SearchingCarAction" var="homeLink"/>
                             <div class="mb-3">
-                                <c:url var="homeLink" value="MainController">
-                                    <c:param name="action" value="SearchArticle"/>
-                                </c:url>
-                                <a href="${homeLink}">Home Page</a>
+                                <a href="<s:property value="#homeLink"/>">Home Page</a>
                             </div>
                             <div class="mb-3">
                                 <a href="login.jsp">Login</a>

@@ -129,7 +129,7 @@ public class SearchingHistoryAction {
                             }
                         }
 
-                        //get total amount of each orders
+                        //compute rental day
                         long diff = orderDetailsDTO.getReturnDate().getTime() - orderDetailsDTO.getRentalDate().getTime();
                         int diffHours = (int) (diff / (60 * 60 * 1000) % 24);
                         int diffDays = (int) (diff / (24 * 60 * 60 * 1000));

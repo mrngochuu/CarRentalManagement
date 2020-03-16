@@ -38,6 +38,33 @@ public class OrderDAO implements Serializable {
             conn.close();
         }
     }
+    
+    public OrderDTO getObjectByID(int orderID) throws ClassNotFoundException, SQLException {
+        OrderDTO dto = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "SELECT receiverName, receiverPhone, address, paymentDate, email, promotionID FROM orders WHERE orderID = ? AND isPayment = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setInt(1, orderID);
+                pstm.setBoolean(2, true);
+                rs = pstm.executeQuery();
+                if (rs.next()) {
+                    dto = new OrderDTO();
+                    dto.setEmail(rs.getString("email"));
+                    dto.setOrderID(orderID);
+                    dto.setPromotionID(rs.getInt("promotionID"));
+                    dto.setReceiverName(rs.getString("receiverName"));
+                    dto.setReceiverPhone(rs.getString("receiverPhone"));
+                    dto.setAddress(rs.getString("address"));
+                    dto.setPaymentDate(rs.getTimestamp("paymentDate"));
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return dto;
+    }
 
     public OrderDTO getObjectByEmail(String email, boolean payment) throws SQLException, ClassNotFoundException {
         OrderDTO dto = null;
@@ -178,6 +205,48 @@ public class OrderDAO implements Serializable {
                     dto.setAddress(rs.getString("address"));
                     dto.setPaymentDate(rs.getTimestamp("paymentDate"));
                     dto.setPromotionID(rs.getInt("promotionID"));
+                    list.add(dto);
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+    
+    public List<OrderDTO> getAllPaymentOrder(String email, Timestamp fromDate, Timestamp toDate) throws ClassNotFoundException, SQLException {
+        List<OrderDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT orderID, receiverName, receiverPhone, address, paymentDate, promotionID, status FROM Orders WHERE email LIKE ? AND isPayment = ?";
+                if(fromDate != null) {
+                    sql += " AND paymentDate >= '" + fromDate.toString() + "'";
+                }
+                
+                if(toDate != null) {
+                    sql += " AND paymentDate <= '" + toDate.toString() + "'";
+                }
+                
+                sql += " ORDER BY paymentDate DESC";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, "%" + email + "%");
+                pstm.setBoolean(2, true);
+                rs = pstm.executeQuery();
+                while(rs.next()) {
+                    if(list == null) {
+                        list = new ArrayList<>();
+                    }
+                    OrderDTO dto = new OrderDTO();
+                    dto.setEmail(email);
+                    dto.setPayment(true);
+                    dto.setOrderID(rs.getInt("orderID"));
+                    dto.setReceiverName(rs.getString("receiverName"));
+                    dto.setReceiverPhone(rs.getString("receiverPhone"));
+                    dto.setAddress(rs.getString("address"));
+                    dto.setPaymentDate(rs.getTimestamp("paymentDate"));
+                    dto.setPromotionID(rs.getInt("promotionID"));
+                    dto.setStatus(rs.getString("status"));
                     list.add(dto);
                 }
             }

@@ -125,11 +125,23 @@ public class AuthorFillter implements Filter {
         admin.add("error.jsp");
         admin.add("index.jsp");
         admin.add("welcome.jsp");
+        admin.add("createCar.jsp");
+        admin.add("promotion.jsp");
 
         admin.add("LogoutAction");
         admin.add("SearchingCarAction");
         admin.add("ShowingCarAction");
+        admin.add("UpdatingImageAction");
+        admin.add("CreatingCarAction");
+        admin.add("CreatingPromotionAction");
+        admin.add("ManagingTransactionAction");
+        admin.add("UpdatingRentalStatusAction");
         
+        admin.add("CreatingCarAction.action");
+        admin.add("CreatingPromotionAction.action");
+        admin.add("ManagingTransactionAction.action");
+        admin.add("UpdatingRentalStatusAction.action");
+        admin.add("UpdatingImageAction.action");
         admin.add("LogoutAction.action");
         admin.add("SearchingCarAction.action");
         admin.add("ShowingCarAction.action");
@@ -224,16 +236,16 @@ public class AuthorFillter implements Filter {
                     if (admin.contains(resource)) {
                         chain.doFilter(request, response);
                     } else {
-                        req.getRequestDispatcher("SearchingCarAction.action").forward(request, response);
+                        res.sendRedirect("SearchingCarAction.action");
                     }
                 } else if (role.equals("customer")) {
                     if (customer.contains(resource)) {
                         chain.doFilter(request, response);
                     } else {
-                        req.getRequestDispatcher("SearchingCarAction.action").forward(request, response);
+                        res.sendRedirect("SearchingCarAction.action");
                     }
                 } else {
-                    req.getRequestDispatcher("SearchingCarAction.action").forward(request, response);
+                    res.sendRedirect("SearchingCarAction.action");
                 }
             }
 

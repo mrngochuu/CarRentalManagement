@@ -127,8 +127,8 @@
                                                             </table>
                                                             <hr>
                                                             <div class="row">
-                                                                <div class="col-lg-6 mr-auto ml-auto"><h4 class="card-text text-center">Price: <s:property value="#carDTO.price"/></h4></div>
-                                                                <div class="col-lg-6 mr-auto ml-auto"><h4 class="card-text text-center">Quantity: <s:property value="#carDTO.quantity"/></h4></div>
+                                                                <div class="col-lg-6 mr-auto ml-auto"><h5 class="card-text text-center">Price: $<s:property value="#carDTO.price"/>/day</h5></div>
+                                                                <div class="col-lg-6 mr-auto ml-auto"><h5 class="card-text text-center">Quantity: <s:property value="#carDTO.quantity"/></h5></div>
                                                             </div>
                                                             <hr>
                                                             <div class="row">

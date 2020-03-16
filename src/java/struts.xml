@@ -143,5 +143,53 @@
             </result>
         </action>
         
+        <action name="UpdatingImageAction" class="admin.actions.UpdatingImageAction">
+            <interceptor-ref name="fileUpload">  
+                <param name="maximumSize">1000000</param>  
+                <param name="allowedTypes">  
+                    image/png,image/gif,image/jpeg,image/pjpeg,image/jpg
+                </param>  
+                <param name="allowedExtensions">  
+                    .png,.gif,.jpeg,.pjpeg,.jpg
+                </param>  
+            </interceptor-ref>   
+            <interceptor-ref name="defaultStack"></interceptor-ref>  
+            <result name="success">createCar.jsp</result>  
+            <result name="input">createCar.jsp</result>   
+        </action>
+        
+        <action name="CreatingCarAction" class="admin.actions.CreatingCarAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SearchingCarAction</param>
+                <param name="message">${message}</param>
+            </result>
+            <result name="invalid">createCar.jsp</result>   
+            <result name="input">createCar.jsp</result>   
+        </action>
+        
+        <action name="ManagingTransactionAction" class="admin.actions.ManagingTransactionAction">
+            <result name="success">admin.jsp</result>
+        </action>
+        
+        <action name="UpdatingRentalStatusAction" class="admin.actions.UpdatingRentalStatusAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">ManagingTransactionAction</param>
+                <param name="message">${message}</param>
+                <param name="carName">${carName}</param>
+                <param name="email">${email}</param>
+                <param name="rentalFromDate">${rentalFromDate}</param>
+                <param name="rentalToDate">${rentalToDate}</param>
+                <param name="returnFromDate">${returnFromDate}</param>
+                <param name="returnToDate">${returnToDate}</param>
+            </result>
+        </action>
+        
+        <action name="CreatingPromotionAction" class="admin.actions.CreatingPromotionAction">
+            <result name="success" type="redirectAction">
+                <param name="actionName">SearchingCarAction</param>
+                <param name="message">${message}</param>
+            </result>
+            <result name="input">promotion.jsp</result>   
+        </action>
     </package>
 </struts>

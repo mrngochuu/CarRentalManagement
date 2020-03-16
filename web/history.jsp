@@ -34,11 +34,11 @@
             <div class="row">
                 <!-- search -->
                 <div class="col-lg-3 mt-3 bg-light rounded" style="min-height: 280px; max-height: 350px;">
-                    <h1 class="text-center">History</h1>
+                    <h1 class="text-center">History Search</h1>
                     <form action="SearchingHistoryAction" class="form-signin">
                         <input class="form-control mb-5 mt-3" type="text" name="txtSearch" placeholder="Car Name" value="<s:property value="txtSearch"/>"/>
                         <!-- Type -->
-                        <h4 class="text-center mb-3">Date rental</h5>
+                        <h4 class="text-center mb-3">Payment date</h5>
                             <div class="row">
                                 <div class='col-md-6 mr-auto ml-auto'>
                                     <div class="form-group">
@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input class="form-control btn btn-outline-success bg-warning mb-5" type="submit" value="SEARCH" />
+                            <input class="form-control btn btn-outline-success bg-warning mt-3 mb-3" type="submit" value="SEARCH" />
                     </form>
                 </div>
 

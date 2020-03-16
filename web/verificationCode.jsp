@@ -32,8 +32,9 @@
                             </s:form>
                                 
                             <hr class="m3-b">
+                            <s:url action="SearchingCarAction" var="homeLink"/>
                             <div class="mb-3">
-                                <a href="#">Home Page</a>
+                                <a href="<s:property value="#homeLink"/>">Home Page</a>
                             </div>
                             <div class="mb-3">
                                 <s:url action="SendingMailAction" var="resendLink" escapeAmp="false">
@@ -42,7 +43,6 @@
                                 </s:url>
                                 <a href="<s:property value="#resendLink"/>">Resend code</a>
                             </div>
-
                         </div>
                     </div>
                 </div>

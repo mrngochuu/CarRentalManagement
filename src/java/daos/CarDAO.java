@@ -100,7 +100,7 @@ public class CarDAO implements Serializable {
                     sql += " AND price >= " + Integer.parseInt(minPrice);
                 }
                 
-                if(!maxPrice.isEmpty() || maxPrice.equals("Max Price")) {
+                if(!maxPrice.isEmpty() || !maxPrice.equals("Max price")) {
                     sql += " AND price <= " + Integer.parseInt(maxPrice);
                 }
                 
@@ -169,5 +169,47 @@ public class CarDAO implements Serializable {
             closeConnection();
         }
         return dto;
+    }
+    
+    public boolean checkTheSameName(String carName, String model) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT carID FROM Cars WHERE carName = ? AND model = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, carName);
+                pstm.setString(2, model);
+                rs = pstm.executeQuery();
+                flag = rs.next();
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
+    
+    public boolean insertNewCar(CarDTO dto) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "INSERT INTO Cars(carName, price, quantity, createdDate, status, imgURL, categoryID, color, model) VALUES(?,?,?,?,?,?,?,?,?)";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, dto.getCarName());
+                pstm.setInt(2, dto.getPrice());
+                pstm.setInt(3, dto.getQuantity());
+                pstm.setTimestamp(4, dto.getCreatedDate());
+                pstm.setString(5, dto.getStatus());
+                pstm.setString(6, dto.getImgURL());
+                pstm.setInt(7, dto.getCategoryID());
+                pstm.setString(8, dto.getColor());
+                pstm.setString(9, dto.getModel());
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
     }
 }

@@ -89,4 +89,27 @@ public class PromotionDAO implements Serializable {
         }
         return list;
     }
+    
+    public boolean createNewPromotion(PromotionDTO dto) throws SQLException, ClassNotFoundException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "INSERT INTO Promotions (promotionName, percents, conditionAmount, startedDate, endedDate, createdDate, status, expiryDate) VALUES (?,?,?,?,?,?,?,?)";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, dto.getPromotionName());
+                pstm.setInt(2, dto.getPercents());
+                pstm.setInt(3, dto.getConditionAmount());
+                pstm.setTimestamp(4, dto.getStartedDate());
+                pstm.setTimestamp(5, dto.getEndedDate());
+                pstm.setTimestamp(6, dto.getCreatedDate());
+                pstm.setString(7, dto.getStatus());
+                pstm.setInt(8, dto.getExpiryDate());
+                flag = pstm.executeUpdate() > 0;
+            }
+        }finally {
+            closeConnection();
+        }
+        return flag;
+    }
 }

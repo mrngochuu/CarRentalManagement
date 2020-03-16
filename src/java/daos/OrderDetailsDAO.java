@@ -268,4 +268,72 @@ public class OrderDetailsDAO implements Serializable {
         }
         return flag;
     }
+    
+    public List<OrderDetailsDTO> getAllCarWithDateAndStatus(Timestamp rentalFromDate, Timestamp rentalToDate, Timestamp returnFromDate, Timestamp returnToDate, String status) throws ClassNotFoundException, SQLException {
+        List<OrderDetailsDTO> list = null;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if(conn != null) {
+                String sql = "SELECT price, quantity, orderID, carID, rentalDate, returnDate, status FROM OrderDetails WHERE status IS NOT NULL";
+                
+                if(rentalFromDate != null) {
+                    sql += " AND rentalDate >= '" + rentalFromDate +"'";
+                }
+                
+                if(rentalToDate != null) {
+                    sql += " AND rentalDate <= '" + rentalToDate +"'";
+                }
+                
+                if(returnFromDate != null) {
+                    sql += " AND returnDate >= '" + returnFromDate +"'";
+                }
+                
+                if(returnToDate != null) {
+                    sql += " AND returnDate <= '" + returnToDate +"'";
+                }
+                
+                if(!status.isEmpty()) {
+                    sql += " AND status = '" + status + "'";
+                }
+                
+                pstm = conn.prepareStatement(sql);
+                rs = pstm.executeQuery();
+                while (rs.next()) {
+                    if(list == null) {
+                        list = new ArrayList<>();
+                    }
+                    OrderDetailsDTO dto = new OrderDetailsDTO();
+                    dto.setPrice(rs.getInt("price"));
+                    dto.setQuantity(rs.getInt("quantity"));
+                    dto.setOrderID(rs.getInt("orderID"));
+                    dto.setCarID(rs.getInt("carID"));
+                    dto.setRentalDate(rs.getTimestamp("rentalDate"));
+                    dto.setReturnDate(rs.getTimestamp("returnDate"));
+                    dto.setStatus(rs.getString("status"));
+                    list.add(dto);  
+                }
+            }
+        } finally {
+            closeConnection();
+        }
+        return list;
+    }
+    
+    public boolean updateStatusRental(int orderID, int carID, String status) throws ClassNotFoundException, SQLException {
+        boolean flag = false;
+        try {
+            conn = DatabaseUtils.getConnection();
+            if (conn != null) {
+                String sql = "Update orderDetails SET status = ? WHERE orderID = ? AND carID = ?";
+                pstm = conn.prepareStatement(sql);
+                pstm.setString(1, status);
+                pstm.setInt(2, orderID);
+                pstm.setInt(3, carID);
+                flag = pstm.executeUpdate() > 0;
+            }
+        } finally {
+            closeConnection();
+        }
+        return flag;
+    }
 }
